@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/discover"
+        android:icon="@drawable/baseline_explore_24"
+        android:title="Discover" />
+
+
+    <item
+        android:id="@+id/today"
+        android:icon="@drawable/baseline_date_range_24"
+        android:title="Today" />
+
+
+    <item
+        android:id="@+id/post"
+        android:icon="@drawable/baseline_add_circle_outline_24"
+        android:title="Post" />
+
+
+    <item
+        android:id="@+id/myrecipe"
+        android:icon="@drawable/baseline_favorite_border_24"
+        android:title="Mine" />
+
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/baseline_co_present_24"
+        android:title="Profile" />
+
+</menu>
