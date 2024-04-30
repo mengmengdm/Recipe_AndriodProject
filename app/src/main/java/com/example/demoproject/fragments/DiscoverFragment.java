@@ -3,6 +3,7 @@ package com.example.demoproject.fragments;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.demoproject.R;
@@ -72,11 +74,13 @@ public class DiscoverFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_discover, container, false);
 
         TextView textView = view.findViewById(R.id.testText);
+        ImageView imageView = view.findViewById(R.id.testImage);
         //set network connections
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
         String testurl = "https://studev.groept.be/api/a23PT214/test";
-        connectionRequest.makeGetRequest(testurl,new ConnectionRequest.MyRequestCallback(){
+        String imagetesturl ="https://www.themealdb.com/images/media/meals/wuvryu1468232995.jpg";
+        connectionRequest.stringGetRequest(testurl,new ConnectionRequest.MyRequestCallback<String>(){
             @Override
             public void onSuccess(String response) {
                 textView.setText(response);
@@ -88,6 +92,19 @@ public class DiscoverFragment extends Fragment {
                 textView.setText("response failed");
             }
         } );
+
+        connectionRequest.imageGetRequest(imagetesturl,
+                new ConnectionRequest.MyRequestCallback<Bitmap>() {
+                    @Override
+                    public void onSuccess(Bitmap response) {
+                        imageView.setImageBitmap(response);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e(TAG, "onError: "+error);
+                    }
+                });
         return view;
     }
 }

@@ -1,10 +1,16 @@
 package com.example.demoproject.connection;
 
+import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -15,26 +21,48 @@ public class ConnectionRequest {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
-    public void makeGetRequest(String url, final MyRequestCallback callback) {
+    public void stringGetRequest(String url, final MyRequestCallback callback) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // 请求成功时调用回调函数
+                        // callback for success
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // 请求失败时调用回调函数
+                // callback for error
                 callback.onError(error.getMessage());
             }
         });
         requestQueue.add(stringRequest);
     }
 
-    public interface MyRequestCallback {
-        void onSuccess(String response);
+    public void imageGetRequest(String url, final MyRequestCallback callback) {
+        ImageRequest imageRequest = new ImageRequest(
+                url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                0,
+                0,
+                CENTER_INSIDE,
+                Bitmap.Config.RGB_565,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.toString());
+                    }
+                });
+        requestQueue.add(imageRequest);
+}
+
+    public interface MyRequestCallback<T> {
+        void onSuccess(T response);
         void onError(String error);
     }
 }
