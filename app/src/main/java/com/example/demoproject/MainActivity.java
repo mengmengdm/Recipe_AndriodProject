@@ -1,5 +1,20 @@
 package com.example.demoproject;
+/*some useful information and apis
+https://studev.groept.be/api/a23PT214
+username: a23PT214
+password: secret
 
+apis:
+https://studev.groept.be/api/a23PT214/test
+
+gitlab page(andriod):
+https://gitlab.kuleuven.be/
+ssh：git@gitlab.kuleuven.be:groep-t/courses/programming-techniques/2324/ap-214.git
+no password
+
+github page(python for databse):
+https://github.com/mengmengdm/javafinal
+*/
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;

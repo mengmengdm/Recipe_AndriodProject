@@ -11,8 +11,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
 
 public class ConnectionRequest {
     private RequestQueue requestQueue;
@@ -38,7 +41,23 @@ public class ConnectionRequest {
         });
         requestQueue.add(stringRequest);
     }
-
+    public void jsonGetRequest(String url, final MyRequestCallback callback){
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.toString());
+                    }
+                });
+        requestQueue.add(jsonArrayRequest);
+    }
     public void imageGetRequest(String url, final MyRequestCallback callback) {
         ImageRequest imageRequest = new ImageRequest(
                 url,

@@ -74,7 +74,9 @@ public class DiscoverFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_discover, container, false);
 
         TextView textView = view.findViewById(R.id.testText);
+        TextView jsonTextView = view.findViewById(R.id.jsontext);
         ImageView imageView = view.findViewById(R.id.testImage);
+
         //set network connections
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
