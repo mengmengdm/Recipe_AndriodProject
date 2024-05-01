@@ -1,0 +1,29 @@
+[33mcommit 451a56a874e9902d8eeeb0cb32e7a85b70a79c85[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: ryan <1197539804@qq.com>
+Date:   Wed Apr 24 22:29:51 2024 +0200
+
+    successfully switch between fragments by the navigation bar
+
+[33mcommit 147fd60a6a9d20a03d0fc9453fe2780463a3341d[m
+Author: ryan <1197539804@qq.com>
+Date:   Wed Apr 24 17:18:12 2024 +0200
+
+    successfully switch between fragments by the navigation bar
+
+[33mcommit 7d2ba15a385c0d1e90ec7b518f277ebc7511ae2d[m
+Author: Haoran Fang <fhr77382@qq.com>
+Date:   Sat Apr 20 01:42:38 2024 +0200
+
+    add some fragments but nothing inside
+
+[33mcommit 5cafd6cd1d753076d8e2fe6612f63c37ade69ef9[m
+Author: Haoran Fang <fhr77382@qq.com>
+Date:   Fri Apr 19 00:56:17 2024 +0200
+
+    add a navigation bar for the main activity, but not adding any logic
+
+[33mcommit 04b87874f2be21b55e5d4213e2e5a78577f6124f[m
+Author: ryan <1197539804@qq.com>
+Date:   Wed Apr 17 15:16:34 2024 +0200
+
+    first commit
