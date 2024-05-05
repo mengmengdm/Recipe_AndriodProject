@@ -57,6 +57,13 @@ public class LoginActivity extends AppCompatActivity {
         toSignupPage = findViewById(R.id.to_signup_page);
         login = findViewById(R.id.login_button);
 
+        findViewById(android.R.id.content).post(this::setupClickableSpan);
+
+        //Click to Log In
+        login.setOnClickListener(v -> login());
+    }
+
+    private void setupClickableSpan(){
         // Set “SIGN UP” Color As #5C827D
         String text = "NOT A USER? SIGN UP";
         SpannableString spannableString = new SpannableString(text);
@@ -87,9 +94,6 @@ public class LoginActivity extends AppCompatActivity {
 
         toSignupPage.setText(spannableString);
         toSignupPage.setMovementMethod(LinkMovementMethod.getInstance());
-
-        //Click to Log In
-        login.setOnClickListener(v -> login());
     }
 
     //Show App Progress To Users
@@ -135,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                             String Username = curObject.getString("UserName");
                             String hashedPassword = curObject.getString("Password");
 
+                            //User Exists
                             if(userName.getText().toString().equals(Username)){
                                 userExist = true;
                                 //Use BCrypt Method To Check Password
@@ -153,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                         }
+                        //User Does Not Exist
                         if(!userExist){
                             progressBar.setVisibility(View.GONE);
                             snackBar("Please Sign Up");

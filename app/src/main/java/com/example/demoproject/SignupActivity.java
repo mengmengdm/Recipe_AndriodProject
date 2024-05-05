@@ -63,6 +63,13 @@ public class SignupActivity extends AppCompatActivity {
         toLoginPage = findViewById(R.id.to_login_page);
         signup = findViewById(R.id.signup_button);
 
+        findViewById(android.R.id.content).post(this::setupClickableSpan);
+
+        //Click to Sign Up
+        signup.setOnClickListener(v -> signup());
+    }
+
+    private void setupClickableSpan(){
         // Set “LOG IN” Color As #5C827D
         String text = "ALREADY A USER? LOG IN";
         SpannableString spannableString = new SpannableString(text);
@@ -96,11 +103,7 @@ public class SignupActivity extends AppCompatActivity {
 
         toLoginPage.setText(spannableString);
         toLoginPage.setMovementMethod(LinkMovementMethod.getInstance());
-
-        //Click to Sign Up
-        signup.setOnClickListener(v -> signup());
     }
-
     //Show App Progress To Users
     private void snackBar(String message) {
         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
@@ -142,7 +145,7 @@ public class SignupActivity extends AppCompatActivity {
                             String Username = curObject.getString("UserName");
                             String Emailaddress = curObject.getString("EmailAddress");
                             //If Both Username And Emailaddress Correspond To Same Row
-                            //We Consider The User Exists
+                            //We Consider User Exists
                             if (username.equals(Username)&&emailAddress.getText().toString().equals(Emailaddress)){
                                 snackBar("Please Log In");
                                 userExist = true;
