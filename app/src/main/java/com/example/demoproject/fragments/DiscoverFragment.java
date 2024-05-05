@@ -16,7 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.demoproject.R;
+import com.example.demoproject.Recipe;
 import com.example.demoproject.connection.ConnectionRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +34,7 @@ public class DiscoverFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private List<Recipe> recipeList = new ArrayList<>();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;

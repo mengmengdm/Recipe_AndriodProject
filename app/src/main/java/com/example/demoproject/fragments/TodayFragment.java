@@ -3,12 +3,19 @@ package com.example.demoproject.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.demoproject.R;
+import com.example.demoproject.Recipe;
+import com.example.demoproject.RecyclerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +28,8 @@ public class TodayFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private List<Recipe> recipeList = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,7 +69,24 @@ public class TodayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_today, container, false);
+        intintest();
+        View view = inflater.inflate(R.layout.fragment_today, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        //将数据源传入到适配器里
+        RecyclerAdapter adapter = new RecyclerAdapter(recipeList);
+        //显示item
+        recyclerView.setAdapter(adapter);
+        return view;
     }
+
+    private void intintest() {
+        for (int i = 0; i < 10; i++) {
+            Recipe item = new Recipe("name");
+            recipeList.add(item);
+    }
+}
 }
