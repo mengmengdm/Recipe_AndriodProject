@@ -10,6 +10,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +20,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class LoginActivity extends AppCompatActivity {
+
+    EditText emailAddress, password;
+    TextView toSignupPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +35,12 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Assignment
+        emailAddress = findViewById(R.id.login_username);
+        password = findViewById(R.id.login_password);
+        toSignupPage = findViewById(R.id.to_signup_page);
+
         // Set “SIGN UP” Color As #5C827D
-        TextView textView = findViewById(R.id.to_signup_page);
         String text = "NOT A USER? SIGN UP";
         SpannableString spannableString = new SpannableString(text);
 
@@ -41,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         int endIndex = startIndex + "SIGN UP".length();
         spannableString.setSpan(colorSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        textView.setText(spannableString);
+        toSignupPage.setText(spannableString);
 
         //To Signup Page
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -60,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         };
         spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        textView.setText(spannableString);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        toSignupPage.setText(spannableString);
+        toSignupPage.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

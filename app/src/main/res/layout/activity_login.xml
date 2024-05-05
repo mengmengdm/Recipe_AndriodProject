@@ -44,7 +44,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="40dp"/>
+            android:layout_height="30dp"/>
+
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -58,12 +59,14 @@
             android:layout_height="60dp">
 
             <EditText
-                android:id="@+id/login_email"
+                android:id="@+id/login_username"
                 android:background="@android:color/transparent"
-                android:hint="EMAIL ADDRESS"
+                android:hint="USER NAME"
                 android:textSize="20sp"
                 android:gravity="center"
                 android:textStyle="bold"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -88,10 +91,30 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:inputType="textPassword"
+                android:imeOptions="actionDone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+
+            <ProgressBar
+                android:id="@+id/login_progressbar"
+                style="?android:attr/progressBarStyle"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:layout_marginLeft="40dp"
@@ -101,7 +124,6 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:layout_marginTop="60dp"
             android:background="@drawable/submit_background"
             android:layout_width="match_parent"
             android:layout_height="60dp"/>
