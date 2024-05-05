@@ -43,7 +43,7 @@ public class SignupActivity extends AppCompatActivity {
     TextView toLoginPage;
     Button signup;
     private static final String POST_URL = "https://studev.groept.be/api/a23pt214/insert_user_info/";
-    private static final String GET_URL = "https://studev.groept.be/api/a23pt214/get_username";
+    private static final String GET_URL = "https://studev.groept.be/api/a23pt214/get_username_emailaddress";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +139,17 @@ public class SignupActivity extends AppCompatActivity {
                         boolean userExist = false;
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject curObject = response.getJSONObject(i);
-                            if (username.equals(curObject.getString("UserName"))) {
+                            String Username = curObject.getString("UserName");
+                            String Emailaddress = curObject.getString("EmailAddress");
+                            //If Both Username And Emailaddress Correspond To Same Row
+                            //We Consider The User Exists
+                            if (username.equals(Username)&&emailAddress.getText().toString().equals(Emailaddress)){
+                                snackBar("Please Log In");
+                                userExist = true;
+                                break;
+                            }
+                            //Ensure Uniqueness Of Username
+                            else if (username.equals(Username)) {
                                 snackBar("User Name Already In Use");
                                 userExist = true;
                                 break;
