@@ -122,12 +122,12 @@ public class SignupActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(s_userName) || TextUtils.isEmpty(s_emailAddress) || TextUtils.isEmpty(s_password)) {
             snackBar("Please Fill In All Fields");
         } else {
-            checkUsername(s_userName);
+            checkUsername(userName.getText().toString());
         }
     }
 
     //Check If Username Exists
-    private void checkUsername(String userName) {
+    private void checkUsername(String username) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -135,16 +135,17 @@ public class SignupActivity extends AppCompatActivity {
                 null,
                 response -> {
                     try {
-                        boolean flag = false;
+                        //A Flag To Check If Username Exists
+                        boolean userExist = false;
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject curObject = response.getJSONObject(i);
-                            if (userName.equals(curObject.getString("UserName"))) {
+                            if (username.equals(curObject.getString("UserName"))) {
                                 snackBar("User Name Already In Use");
-                                flag = true;
+                                userExist = true;
                                 break;
                             }
                         }
-                        if (!flag) {
+                        if (!userExist) {
                             submitInfo();
                         }
                     } catch (JSONException ignored) {
