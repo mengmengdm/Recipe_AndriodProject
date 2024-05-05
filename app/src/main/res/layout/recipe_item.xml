@@ -6,16 +6,27 @@
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
-    android:id="@+id/testTextview1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="niumochoubin"
-        />
+        android:id="@+id/testTextview1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="niumochoubin" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/testImage"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
+
+
     <TextView
-    android:id="@+id/testTextview2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="haha"
-        />
+        android:id="@+id/testTextview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="haha" />
+
+    <View
+        android:background="@color/theme"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
 
 </LinearLayout>

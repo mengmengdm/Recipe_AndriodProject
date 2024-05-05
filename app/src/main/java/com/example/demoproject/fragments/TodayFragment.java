@@ -1,11 +1,14 @@
 package com.example.demoproject.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,11 @@ import android.view.ViewGroup;
 import com.example.demoproject.R;
 import com.example.demoproject.Recipe;
 import com.example.demoproject.RecyclerAdapter;
+import com.example.demoproject.connection.ConnectionRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,24 +77,66 @@ public class TodayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        intintest();
+        Activity activity = requireActivity();
+        ConnectionRequest connectionRequest = new ConnectionRequest(activity);
+
+        //intintest();
+
         View view = inflater.inflate(R.layout.fragment_today, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
+
+        });
         //将数据源传入到适配器里
         RecyclerAdapter adapter = new RecyclerAdapter(recipeList);
         //显示item
         recyclerView.setAdapter(adapter);
+        initUrl(connectionRequest,adapter);
         return view;
     }
 
+    //test method of recyclerview
+
     private void intintest() {
-        for (int i = 0; i < 10; i++) {
-            Recipe item = new Recipe("name");
+        for (int i = 0; i < 100; i++) {
+            String str = String.valueOf(i);
+            Recipe item = new Recipe(i);
             recipeList.add(item);
     }
 }
+    //importing real urls to the list
+    private void initUrl(ConnectionRequest connectionRequest,RecyclerAdapter adapter){
+        String imgUrl = "https://studev.groept.be/api/a23PT214/get_img";
+        connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
+            @Override
+            public void onSuccess(JSONArray response) {
+                try {
+                    //String responseString = "";
+                    for( int i = 0; i < response.length(); i++ )
+                    {
+                        Recipe recipe = new Recipe();
+                        JSONObject curObject = response.getJSONObject( i );
+                        recipe.setIdMeal(curObject.getInt("idMeal"));
+                        recipe.setIdReal(curObject.getInt("idReal"));
+                        recipe.setImgMeal(curObject.getString("imgMeal"));
+                        Log.d("recipe", "onSuccess:"+recipe.getImgUrl());
+                        recipeList.add(recipe);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+                catch( JSONException e )
+                {
+                    Log.e( "Database", e.getMessage(), e );
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
+    }
 }

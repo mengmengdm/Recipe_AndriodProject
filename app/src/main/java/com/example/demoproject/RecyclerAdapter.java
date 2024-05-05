@@ -18,10 +18,12 @@ public RecyclerAdapter(List<Recipe> recipeList){
 }
 
 static class ViewHolder extends RecyclerView.ViewHolder{
-    TextView testText;
+    TextView text1;
+    TextView text2;
     public ViewHolder(@NonNull View itemView) {
         super(itemView);
-        testText = (TextView) itemView.findViewById(R.id.testTextview2);
+        text1 = (TextView) itemView.findViewById(R.id.testTextview1);
+        text2 = (TextView) itemView.findViewById(R.id.testTextview2);
     }
 }
 
@@ -36,7 +38,8 @@ static class ViewHolder extends RecyclerView.ViewHolder{
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
-        holder.testText.setText(recipe.getName());
+        holder.text1.setText(recipe.getIdReal());
+        holder.text2.setText(recipe.getImgUrl());
     }
 
     @Override
