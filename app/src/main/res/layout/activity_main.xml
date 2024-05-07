@@ -28,7 +28,6 @@
         android:layout_height="wrap_content"
         app:menu="@menu/navigation"
         android:background="#C2EDF3" />
-        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

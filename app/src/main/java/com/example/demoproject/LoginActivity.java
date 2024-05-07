@@ -27,6 +27,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.demoproject.fragments.ProfileFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -137,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject curObject = response.getJSONObject(i);
                             String Username = curObject.getString("UserName");
+                            String Emailaddress = curObject.getString("EmailAddress");
                             String hashedPassword = curObject.getString("Password");
 
                             //User Exists
@@ -149,6 +151,9 @@ public class LoginActivity extends AppCompatActivity {
                                     //Enter App In Two Seconds
                                     findViewById(android.R.id.content).postDelayed(() -> {
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        //Pass Data To MainActivity
+                                        intent.putExtra("username", Username);
+                                        intent.putExtra("emailaddress", Emailaddress);
                                         startActivity(intent);
                                         finish();
                                     }, 2000);
