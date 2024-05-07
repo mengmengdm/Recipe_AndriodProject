@@ -5,9 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,12 +83,13 @@ public class TodayFragment extends Fragment {
                              Bundle savedInstanceState) {
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
 
         //intintest();
 
         View view = inflater.inflate(R.layout.fragment_today, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
@@ -93,9 +97,26 @@ public class TodayFragment extends Fragment {
         });
         //将数据源传入到适配器里
         RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
+        adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Log.d("test", "onItemClick: "+position);
+                navController.navigate(R.id.recipeFragment);
+            }
+        });
         //显示item
         recyclerView.setAdapter(adapter);
         initUrl(connectionRequest,adapter,activity);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                adapter.notifyDataSetChanged();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         return view;
     }
 
@@ -116,7 +137,7 @@ public class TodayFragment extends Fragment {
             public void onSuccess(JSONArray response) {
                 try {
                     //String responseString = "";
-                    for( int i = 0; i < response.length(); i++ )
+                    for( int i = 0; i < 10; i++ )
                     {
                         Recipe recipe = new Recipe(context);
                         JSONObject curObject = response.getJSONObject( i );
@@ -137,7 +158,7 @@ public class TodayFragment extends Fragment {
 
             @Override
             public void onError(String error) {
-
+                Log.e("initurl", "onError: "+error );
             }
         });
     }

@@ -32,6 +32,11 @@
         android:name="com.example.demoproject.fragments.TodayFragment"
         android:label="Today"
         tools:layout="@layout/fragment_today" />
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="com.example.demoproject.fragments.RecipeFragment"
+        android:label="Today"
+        tools:layout="@layout/fragment_recipe" />
 
 
 

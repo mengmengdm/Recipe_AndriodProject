@@ -18,11 +18,21 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 private List<Recipe> recipeList;
 private ConnectionRequest connectionRequest;
+private OnItemClickListener listener;
+private int itemPosition;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public RecyclerAdapter(List<Recipe> recipeList, Context context){
     this.recipeList = recipeList;
     connectionRequest = new ConnectionRequest(context);
-}
+    }
 
 static class ViewHolder extends RecyclerView.ViewHolder{
     TextView text1;
@@ -46,10 +56,20 @@ static class ViewHolder extends RecyclerView.ViewHolder{
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
+        //itemPosition = holder.getBindingAdapterPosition();
         Recipe recipe = recipeList.get(position);
         holder.text1.setText(recipe.getIdReal());
         holder.text2.setText(recipe.getImgUrl());
         holder.img1.setImageBitmap(recipe.getBitmap());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+
+                    listener.onItemClick(holder.getBindingAdapterPosition());
+                }
+            }
+        });
         //holder.img1.setImageBitmap();
     }
 
