@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.example.demoproject.fragments.RecipeFragment"
-        android:label="Today"
+        android:label="recipe"
         tools:layout="@layout/fragment_recipe" />
 
 
