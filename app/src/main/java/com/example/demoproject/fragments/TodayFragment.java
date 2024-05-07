@@ -1,6 +1,7 @@
 package com.example.demoproject.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -91,10 +92,10 @@ public class TodayFragment extends Fragment {
 
         });
         //将数据源传入到适配器里
-        RecyclerAdapter adapter = new RecyclerAdapter(recipeList);
+        RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
         //显示item
         recyclerView.setAdapter(adapter);
-        initUrl(connectionRequest,adapter);
+        initUrl(connectionRequest,adapter,activity);
         return view;
     }
 
@@ -108,7 +109,7 @@ public class TodayFragment extends Fragment {
     }
 }
     //importing real urls to the list
-    private void initUrl(ConnectionRequest connectionRequest,RecyclerAdapter adapter){
+    private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
         String imgUrl = "https://studev.groept.be/api/a23PT214/get_img";
         connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
             @Override
@@ -117,11 +118,12 @@ public class TodayFragment extends Fragment {
                     //String responseString = "";
                     for( int i = 0; i < response.length(); i++ )
                     {
-                        Recipe recipe = new Recipe();
+                        Recipe recipe = new Recipe(context);
                         JSONObject curObject = response.getJSONObject( i );
                         recipe.setIdMeal(curObject.getInt("idMeal"));
                         recipe.setIdReal(curObject.getInt("idReal"));
                         recipe.setImgMeal(curObject.getString("imgMeal"));
+                        recipe.setBitmap();
                         Log.d("recipe", "onSuccess:"+recipe.getImgUrl());
                         recipeList.add(recipe);
                     }

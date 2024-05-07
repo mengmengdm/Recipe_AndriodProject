@@ -9,12 +9,13 @@
         android:id="@+id/testTextview1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="niumochoubin" />
+        android:text="test" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/testImage"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"/>-->
+    <ImageView
+        android:id="@+id/testImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 
 
     <TextView
