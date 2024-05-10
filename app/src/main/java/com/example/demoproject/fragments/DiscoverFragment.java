@@ -139,7 +139,7 @@ public class DiscoverFragment extends Fragment {
             recipeList.add(item);
         }
     }
-    //importing real urls to the list
+    //importing the recipe list into the discovery page
     private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
         String imgUrl = "https://studev.groept.be/api/a23PT214/get_meal_info";
         connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
@@ -147,13 +147,16 @@ public class DiscoverFragment extends Fragment {
             public void onSuccess(JSONArray response) {
                 try {
                     //String responseString = "";
-                    for( int i = 0; i < 1; i++ )
+                    for( int i = 0; i < response.length(); i++ )
                     {
                         Recipe recipe = new Recipe(context);
                         JSONObject curObject = response.getJSONObject( i );
                         recipe.setIdMeal(curObject.getInt("idMeal"));
+                        recipe.setStrName(curObject.getString("strName"));
+                        recipe.setStrCategory(curObject.getString("strCategory"));
+                        recipe.set
                         recipe.setBitmap(curObject.getString("bitImg"));
-                        Log.d("recipe", "onSuccess:"+curObject.getString("bitImg"));
+                        //Log.d("recipe", "onSuccess:"+curObject.getString("stepImg"));
                         recipeList.add(recipe);
                     }
                     adapter.notifyDataSetChanged();
