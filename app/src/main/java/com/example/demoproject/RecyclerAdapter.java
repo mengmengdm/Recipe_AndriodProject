@@ -65,7 +65,6 @@ static class ViewHolder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-
                     listener.onItemClick(holder.getBindingAdapterPosition());
                 }
             }

@@ -2,6 +2,8 @@ package com.example.demoproject;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.demoproject.connection.ConnectionRequest;
@@ -14,6 +16,7 @@ public class Recipe {
     private String imgMeal;
     private String strCategory;
     private String strArea;
+    private Bitmap bitmap;
     private ConnectionRequest connectionRequest;
     private Bitmap returnBitmap;
     public Recipe(Context context){
@@ -73,8 +76,13 @@ public class Recipe {
                     }
                 });
     }
+    public void setBitmap(String base64String){
+        byte[] imageBytes = Base64.decode( base64String, Base64.DEFAULT );
+        this.bitmap = BitmapFactory.decodeByteArray( imageBytes, 0, imageBytes.length );
+        Log.d("recipe", "setBitmap: "+String.valueOf(bitmap));
+    }
     public Bitmap getBitmap(){
-        return returnBitmap;
+        return bitmap;
     }
     public void setStrArea(String strArea) {
         this.strArea = strArea;

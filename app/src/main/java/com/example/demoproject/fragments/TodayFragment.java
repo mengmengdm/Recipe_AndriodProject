@@ -95,7 +95,7 @@ public class TodayFragment extends Fragment {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
 
         });
-        //将数据源传入到适配器里
+        //transfer the data into the adapter
         RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
         adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
@@ -104,7 +104,7 @@ public class TodayFragment extends Fragment {
                 navController.navigate(R.id.recipeFragment);
             }
         });
-        //显示item
+        //set recyclerView
         recyclerView.setAdapter(adapter);
         initUrl(connectionRequest,adapter,activity);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

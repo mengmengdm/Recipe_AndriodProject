@@ -43,7 +43,9 @@ public class ConnectionRequest {
     }
     public void jsonGetRequest(String url, final MyRequestCallback callback){
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
                 url,
+                null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

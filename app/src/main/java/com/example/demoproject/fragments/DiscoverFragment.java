@@ -3,10 +3,17 @@ package com.example.demoproject.fragments;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +24,12 @@ import android.widget.TextView;
 
 import com.example.demoproject.R;
 import com.example.demoproject.Recipe;
+import com.example.demoproject.RecyclerAdapter;
 import com.example.demoproject.connection.ConnectionRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,43 +87,87 @@ public class DiscoverFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //load in the xml file the corresponding page
-        View view = inflater.inflate(R.layout.fragment_discover, container, false);
-
-        TextView textView = view.findViewById(R.id.testText);
-        TextView jsonTextView = view.findViewById(R.id.jsontext);
-        ImageView imageView = view.findViewById(R.id.testImage);
-
-        //set network connections
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
-        String testurl = "https://studev.groept.be/api/a23PT214/test";
-        String imagetesturl ="https://www.themealdb.com/images/media/meals/wuvryu1468232995.jpg";
-        connectionRequest.stringGetRequest(testurl,new ConnectionRequest.MyRequestCallback<String>(){
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
+
+        //intintest();
+
+        View view = inflater.inflate(R.layout.fragment_today, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
+
+        });
+        //transfer the data into the adapter
+        RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
+        initUrl(connectionRequest,adapter,activity);
+        adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
-            public void onSuccess(String response) {
-                textView.setText(response);
-                Log.d(TAG, "onSuccess: "+response);
+            public void onItemClick(int position) {
+                Recipe selectedRecipe = recipeList.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("testString", String.valueOf(position));
+                Log.d("test", "onItemClick: "+position);
+                navController.navigate(R.id.recipeFragment,bundle);
+            }
+        });
+        //set recyclerView
+        recyclerView.setAdapter(adapter);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                adapter.notifyDataSetChanged();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        return view;
+    }
+
+    //test method of recyclerview
+
+    private void intintest() {
+        for (int i = 0; i < 100; i++) {
+            String str = String.valueOf(i);
+            Recipe item = new Recipe(i);
+            recipeList.add(item);
+        }
+    }
+    //importing real urls to the list
+    private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
+        String imgUrl = "https://studev.groept.be/api/a23PT214/get_meal_info";
+        connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
+            @Override
+            public void onSuccess(JSONArray response) {
+                try {
+                    //String responseString = "";
+                    for( int i = 0; i < 1; i++ )
+                    {
+                        Recipe recipe = new Recipe(context);
+                        JSONObject curObject = response.getJSONObject( i );
+                        recipe.setIdMeal(curObject.getInt("idMeal"));
+                        recipe.setBitmap(curObject.getString("bitImg"));
+                        Log.d("recipe", "onSuccess:"+curObject.getString("bitImg"));
+                        recipeList.add(recipe);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+                catch( JSONException e )
+                {
+                    Log.e( "Database", e.getMessage(), e );
+                }
             }
 
             @Override
             public void onError(String error) {
-                textView.setText("response failed");
+                Log.e("initurl", "onError: "+error );
             }
-        } );
-
-        connectionRequest.imageGetRequest(imagetesturl,
-                new ConnectionRequest.MyRequestCallback<Bitmap>() {
-                    @Override
-                    public void onSuccess(Bitmap response) {
-                        imageView.setImageBitmap(response);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        Log.e(TAG, "onError: "+error);
-                    }
-                });
-        return view;
+        });
     }
 }

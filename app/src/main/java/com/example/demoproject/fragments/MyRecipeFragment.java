@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.demoproject.R;
 
@@ -60,7 +61,10 @@ public class MyRecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view =  inflater.inflate(R.layout.fragment_my_recipe, container, false);
+        ImageView im = view.findViewById(R.id.testdirectbitmap);
+        //im.setImageBitmap();
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_recipe, container, false);
+        return view;
     }
 }
