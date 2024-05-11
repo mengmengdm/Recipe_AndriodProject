@@ -87,23 +87,30 @@ public class DiscoverFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //find the mainActivity
         Activity activity = requireActivity();
+        //new instance of connectionrequest
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
+        //find navController
         NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
-
-        //intintest();
-
+        //find view and Widget inside
         View view = inflater.inflate(R.layout.fragment_today, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        //linear and staggergid layout of recyclerview(choose one)
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
-
-        });
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        //set layout
+        recyclerView.setLayoutManager(linearLayoutManager);
         //transfer the data into the adapter
+
         RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
-        initUrl(connectionRequest,adapter,activity);
+        if (recipeList.isEmpty()){
+            initUrl(connectionRequest,adapter,activity);
+        }
+
+
         adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -132,13 +139,13 @@ public class DiscoverFragment extends Fragment {
 
     //test method of recyclerview
 
-    private void intintest() {
-        for (int i = 0; i < 100; i++) {
-            String str = String.valueOf(i);
-            Recipe item = new Recipe(i);
-            recipeList.add(item);
-        }
-    }
+//    private void intintest() {
+//        for (int i = 0; i < 100; i++) {
+//            String str = String.valueOf(i);
+//            Recipe item = new Recipe(i);
+//            recipeList.add(item);
+//        }
+//    }
     //importing the recipe list into the discovery page
     private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
         String imgUrl = "https://studev.groept.be/api/a23PT214/get_meal_info";
@@ -154,7 +161,8 @@ public class DiscoverFragment extends Fragment {
                         recipe.setIdMeal(curObject.getInt("idMeal"));
                         recipe.setStrName(curObject.getString("strName"));
                         recipe.setStrCategory(curObject.getString("strCategory"));
-                        recipe.set
+                        recipe.setNumIng(curObject.getInt("numIng"));
+                        recipe.setNumInst(curObject.getInt("numInst"));
                         recipe.setBitmap(curObject.getString("bitImg"));
                         //Log.d("recipe", "onSuccess:"+curObject.getString("stepImg"));
                         recipeList.add(recipe);

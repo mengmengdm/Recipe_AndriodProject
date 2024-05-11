@@ -106,7 +106,7 @@ public class TodayFragment extends Fragment {
         });
         //set recyclerView
         recyclerView.setAdapter(adapter);
-        initUrl(connectionRequest,adapter,activity);
+        //initUrl(connectionRequest,adapter,activity);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -122,38 +122,20 @@ public class TodayFragment extends Fragment {
 
     //test method of recyclerview
 
-    private void intintest() {
-        for (int i = 0; i < 100; i++) {
-            String str = String.valueOf(i);
-            Recipe item = new Recipe(i);
-            recipeList.add(item);
-    }
-}
+//    private void intintest() {
+//        for (int i = 0; i < 100; i++) {
+//            String str = String.valueOf(i);
+//            Recipe item = new Recipe(i);
+//            recipeList.add(item);
+//    }
+//}
     //importing real urls to the list
     private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
         String imgUrl = "https://studev.groept.be/api/a23PT214/get_img";
         connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
             @Override
             public void onSuccess(JSONArray response) {
-                try {
-                    //String responseString = "";
-                    for( int i = 0; i < 10; i++ )
-                    {
-                        Recipe recipe = new Recipe(context);
-                        JSONObject curObject = response.getJSONObject( i );
-                        recipe.setIdMeal(curObject.getInt("idMeal"));
-                        recipe.setIdReal(curObject.getInt("idReal"));
-                        recipe.setImgMeal(curObject.getString("imgMeal"));
-                        recipe.setBitmap();
-                        Log.d("recipe", "onSuccess:"+recipe.getImgUrl());
-                        recipeList.add(recipe);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-                catch( JSONException e )
-                {
-                    Log.e( "Database", e.getMessage(), e );
-                }
+
             }
 
             @Override

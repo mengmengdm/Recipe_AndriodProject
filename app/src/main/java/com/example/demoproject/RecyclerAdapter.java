@@ -58,8 +58,8 @@ static class ViewHolder extends RecyclerView.ViewHolder{
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
         //itemPosition = holder.getBindingAdapterPosition();
         Recipe recipe = recipeList.get(position);
-        holder.text1.setText(recipe.getIdReal());
-        holder.text2.setText(recipe.getImgUrl());
+        holder.text1.setText(recipe.getIdMeal());
+        holder.text2.setText(recipe.getName());
         holder.img1.setImageBitmap(recipe.getBitmap());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

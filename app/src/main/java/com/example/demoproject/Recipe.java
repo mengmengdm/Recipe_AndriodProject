@@ -17,6 +17,23 @@ public class Recipe {
     }
     private String strCategory;
     private int numIng;
+    private int numInst;
+
+    public int getNumIng() {
+        return numIng;
+    }
+
+    public void setNumIng(int numIng) {
+        this.numIng = numIng;
+    }
+
+    public int getNumInst() {
+        return numInst;
+    }
+
+    public void setNumInst(int numInst) {
+        this.numInst = numInst;
+    }
 
     private Bitmap bitmap;
     private ConnectionRequest connectionRequest;
