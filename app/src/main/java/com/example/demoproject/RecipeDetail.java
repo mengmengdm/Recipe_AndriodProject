@@ -41,14 +41,13 @@ public class RecipeDetail extends AppCompatActivity {
         nameTextView.setText(recipe.getName());
         //RecyclerView ingredRecyView = findViewById(R.id.recyclerviewforingrediant);
         RecyclerView detailRecyView = findViewById(R.id.recyclerviewfordetail);
-        //LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         //ingredRecyView.setLayoutManager(linearLayoutManager);
-        //detailRecyView.setLayoutManager(linearLayoutManager);
+        detailRecyView.setLayoutManager(linearLayoutManager);
         //RecyclerAdapter ingredAdapter = new RecyclerAdapter(instructionList)
         RecipeDetailRecyclerAdapter detailAdapter = new RecipeDetailRecyclerAdapter(instructionList,this);
-        if(instructionList.isEmpty()){
-            getInformation(recipe,recipe.getIdMeal(),detailAdapter);
-        }
+        getInformation(recipe,recipe.getIdMeal(),detailAdapter,this,detailRecyView);
+
         detailRecyView.setAdapter(detailAdapter);
         // 设置其他 TextView 显示其他信息...
 
@@ -60,24 +59,27 @@ public class RecipeDetail extends AppCompatActivity {
         });
     }
 
-    private void getInformation(Recipe recipe, int id, RecipeDetailRecyclerAdapter adapter, Context context){
+    private void getInformation(Recipe recipe, int id, RecipeDetailRecyclerAdapter adapter, Context context,RecyclerView recyclerView){
+
         String instructionUrl = "https://studev.groept.be/api/a23PT214/get_insrtuction_byid/";
         instructionUrl = instructionUrl + String.valueOf(id);
+        Log.d("start", "getInformation: "+instructionUrl);
         connectionRequest.jsonGetRequest(instructionUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
             @Override
             public void onSuccess(JSONArray response) {
                 try {
                     for( int i = 0; i < response.length(); i++ )
                     {
+                        Log.d("test??", "onSuccess: ");
                         Instruction instruction = new Instruction();
                         JSONObject curObject = response.getJSONObject( i );
                         instruction.setIdMeal(curObject.getInt("idMeal"));
                         instruction.setNumStep(curObject.getInt("numStep"));
                         instruction.setIntstruct(curObject.getString("strInstruct"));
-                        instruction.setStepTime(curObject.getInt("stepTime"));
+                        instruction.setStepTime(curObject.getString("stepTime"));
                         instruction.setTimeScale(curObject.getString("timeScale"));
                         instruction.setStepImg(curObject.getString("stepImg"));
-                        //Log.d("recipe", "onSuccess:"+curObject.getString("stepImg"));
+                        Log.d("getins", "onSuccess:");
                         instructionList.add(instruction);
                     }
                     adapter.notifyDataSetChanged();

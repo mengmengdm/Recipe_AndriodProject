@@ -51,7 +51,7 @@ static class ViewHolder extends RecyclerView.ViewHolder{
     @NonNull
     @Override
     public RecipeDetailRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_detail, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -61,10 +61,10 @@ static class ViewHolder extends RecyclerView.ViewHolder{
     public void onBindViewHolder(@NonNull RecipeDetailRecyclerAdapter.ViewHolder holder, int position) {
         //itemPosition = holder.getBindingAdapterPosition();
         Instruction instruction = instructionList.get(position);
-        holder.stepnumbertextview.setText(instruction.getNumStep());
+        holder.stepnumbertextview.setText(String.valueOf(instruction.getNumStep()));
         holder.steppicimageview.setImageBitmap(instruction.getStepImg());
         holder.stepdetailtextview.setText(instruction.getIntstruct());
-        holder.timetextview.setText(String.valueOf(instruction.getStepTime())+instruction.getTimeScale());
+        //holder.timetextview.setText(instruction.getStepTime());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

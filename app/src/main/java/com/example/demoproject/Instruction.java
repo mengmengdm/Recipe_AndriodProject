@@ -10,7 +10,7 @@ public class Instruction {
     private int numStep;
 
     private String intstruct;
-    private int stepTime;
+    private String stepTime;
     private String timeScale;
     private Bitmap stepImg;
 
@@ -30,12 +30,16 @@ public class Instruction {
         this.intstruct = intstruct;
     }
 
-    public int getStepTime() {
+    public String getStepTime() {
         return stepTime;
     }
 
-    public void setStepTime(int stepTime) {
-        this.stepTime = stepTime;
+    public void setStepTime(String stepTime) {
+        if (stepTime.isEmpty()) {
+            this.stepTime = stepTime;
+        } else {
+            this.stepTime="";
+        }
     }
 
     public String getTimeScale() {

@@ -31,17 +31,17 @@
         app:layout_constraintTop_toBottomOf="@+id/recipenametextview"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerviewforingrediant"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/introtextview"
-        />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recyclerviewforingrediant"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/introtextview"-->
+<!--        />-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerviewfordetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerviewforingrediant"
+        app:layout_constraintTop_toBottomOf="@+id/introtextview"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
