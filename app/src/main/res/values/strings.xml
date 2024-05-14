@@ -13,4 +13,15 @@
     <string name="username">USER NAME</string>
     <string name="to_signup_page">NOT A USER? SIGN UP</string>
     <string name="login_button">LOG IN</string>
+    <string name="select_category">Select Category</string>
+        <string-array name="recipe_categories">
+            <item>Select Category</item>
+            <item>Chicken</item>
+            <item>Pork</item>
+            <item>Beef</item>
+            <item>Seafood</item>
+            <item>Vegan</item>
+            <item>""</item>
+        </string-array>
+
 </resources>
