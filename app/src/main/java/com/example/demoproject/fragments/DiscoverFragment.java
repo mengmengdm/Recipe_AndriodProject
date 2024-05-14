@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.demoproject.R;
 import com.example.demoproject.Recipe;
+import com.example.demoproject.RecipeDetail;
 import com.example.demoproject.RecyclerAdapter;
 import com.example.demoproject.connection.ConnectionRequest;
 
@@ -104,49 +106,30 @@ public class DiscoverFragment extends Fragment {
         //set layout
         recyclerView.setLayoutManager(linearLayoutManager);
         //transfer the data into the adapter
-
         RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
         if (recipeList.isEmpty()){
             initUrl(connectionRequest,adapter,activity);
         }
-
-
         adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Recipe selectedRecipe = recipeList.get(position);
-                Bundle bundle = new Bundle();
-                bundle.putString("testString", String.valueOf(position));
-                Log.d("test", "onItemClick: "+position);
-                navController.navigate(R.id.recipeFragment,bundle);
+                Context context = getContext();
+                Intent intent = new Intent(context, RecipeDetail.class);
+                intent.putExtra("recipe", recipeList.get(position));
+                context.startActivity(intent);
             }
         });
         //set recyclerView
         recyclerView.setAdapter(adapter);
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 adapter.notifyDataSetChanged();
-
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
         return view;
     }
-
-    //test method of recyclerview
-
-//    private void intintest() {
-//        for (int i = 0; i < 100; i++) {
-//            String str = String.valueOf(i);
-//            Recipe item = new Recipe(i);
-//            recipeList.add(item);
-//        }
-//    }
-    //importing the recipe list into the discovery page
     private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
         String imgUrl = "https://studev.groept.be/api/a23PT214/get_meal_info";
         connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
@@ -156,7 +139,7 @@ public class DiscoverFragment extends Fragment {
                     //String responseString = "";
                     for( int i = 0; i < response.length(); i++ )
                     {
-                        Recipe recipe = new Recipe(context);
+                        Recipe recipe = new Recipe();
                         JSONObject curObject = response.getJSONObject( i );
                         recipe.setIdMeal(curObject.getInt("idMeal"));
                         recipe.setStrName(curObject.getString("strName"));
@@ -174,7 +157,6 @@ public class DiscoverFragment extends Fragment {
                     Log.e( "Database", e.getMessage(), e );
                 }
             }
-
             @Override
             public void onError(String error) {
                 Log.e("initurl", "onError: "+error );

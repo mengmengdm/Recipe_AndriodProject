@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private PostFragment postFragment;
     private ProfileFragment profileFragment;
     private TodayFragment todayFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,5 +43,33 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         NavController navController = Navigation.findNavController(this, R.id.fragment_container);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+        //Save Data Passed From LoginActivity/SignupActivity
+        String username = getIntent().getStringExtra("username");
+        String emailaddress = getIntent().getStringExtra("emailaddress");
+        final Bundle bundle = new Bundle();
+        if (username != null && emailaddress != null) {
+            bundle.putString("username", username);
+            bundle.putString("emailaddress", emailaddress);
+        }
+
+        //Fetch Data And Pass To Specific Fragment
+        //When User Navigate To Specific Fragment
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.discoverFragment) {
+                navController.navigate(R.id.discoverFragment);
+            } else if (itemId == R.id.myRecipeFragment) {
+                navController.navigate(R.id.myRecipeFragment);
+            } else if (itemId == R.id.postFragment) {
+                navController.navigate(R.id.postFragment);
+            } else if (itemId == R.id.profileFragment) {
+                navController.navigate(R.id.profileFragment, bundle);
+            } else if (itemId == R.id.todayFragment) {
+                navController.navigate(R.id.todayFragment);
+            }
+            return true;
+        });
+
     }
 }

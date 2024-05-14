@@ -3,15 +3,46 @@ package com.example.demoproject;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.demoproject.connection.ConnectionRequest;
 
-public class Recipe {
+public class Recipe implements Parcelable {
 
     private int idMeal;
     private String strName;
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(idMeal);
+        dest.writeString(strName);
+        dest.writeString(strCategory);
+        dest.writeInt(numIng);
+        dest.writeInt(numInst);
+    }
+
     public enum Category{
         vegan, chicken, beef, fish
     }
@@ -38,13 +69,20 @@ public class Recipe {
     private Bitmap bitmap;
     private ConnectionRequest connectionRequest;
 
-    public Recipe(Context context){
-        connectionRequest = new ConnectionRequest(context);
+    public Recipe(){
 
     }
 
-    public String getIdMeal() {
-        return String.valueOf(idMeal);
+    protected Recipe(Parcel in){
+        idMeal = in.readInt();
+        strName = in.readString();
+        strCategory = in.readString();
+        numIng = in.readInt();
+        numInst = in.readInt();
+    }
+
+    public int getIdMeal() {
+        return idMeal;
     }
 
     public String getName() {

@@ -7,12 +7,11 @@ import android.util.Log;
 
 public class Instruction {
     private int idMeal;
+    private int numStep;
+
     private String intstruct;
     private int stepTime;
-    public enum TimeScale{
-        second,minute,hour
-    }
-    private TimeScale timeScale;
+    private String timeScale;
     private Bitmap stepImg;
 
     public int getIdMeal() {
@@ -39,11 +38,11 @@ public class Instruction {
         this.stepTime = stepTime;
     }
 
-    public TimeScale getTimeScale() {
+    public String getTimeScale() {
         return timeScale;
     }
 
-    public void setTimeScale(TimeScale timeScale) {
+    public void setTimeScale(String timeScale) {
         this.timeScale = timeScale;
     }
 
@@ -56,4 +55,12 @@ public class Instruction {
         this.stepImg = BitmapFactory.decodeByteArray( imageBytes, 0, imageBytes.length );
         //Log.d("recipe", "setBitmap: "+String.valueOf(stepImg));
     }
+    public int getNumStep() {
+        return numStep;
+    }
+
+    public void setNumStep(int numStep) {
+        this.numStep = numStep;
+    }
+
 }
