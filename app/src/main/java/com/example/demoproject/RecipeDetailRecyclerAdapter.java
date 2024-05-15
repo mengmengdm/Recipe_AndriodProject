@@ -61,10 +61,10 @@ static class ViewHolder extends RecyclerView.ViewHolder{
     public void onBindViewHolder(@NonNull RecipeDetailRecyclerAdapter.ViewHolder holder, int position) {
         //itemPosition = holder.getBindingAdapterPosition();
         Instruction instruction = instructionList.get(position);
-        holder.stepnumbertextview.setText(String.valueOf(instruction.getNumStep()));
+        holder.stepnumbertextview.setText("STEP"+instruction.getNumStep()+":");
         holder.steppicimageview.setImageBitmap(instruction.getStepImg());
         holder.stepdetailtextview.setText(instruction.getIntstruct());
-        //holder.timetextview.setText(instruction.getStepTime());
+        holder.timetextview.setText(instruction.getStepTime());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

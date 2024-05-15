@@ -1,6 +1,5 @@
 package com.example.demoproject;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -27,6 +26,7 @@ public class RecipeDetail extends AppCompatActivity {
     private Recipe recipe;
     private Instruction instruction;
     private List<Instruction> instructionList = new ArrayList<>();
+    private List<Ingredient> ingredientList = new ArrayList<>();
     private ConnectionRequest connectionRequest;
 
     @Override
@@ -39,19 +39,21 @@ public class RecipeDetail extends AppCompatActivity {
         recipe = getIntent().getParcelableExtra("recipe");
         TextView nameTextView = findViewById(R.id.recipenametextview);
         nameTextView.setText(recipe.getName());
-        //RecyclerView ingredRecyView = findViewById(R.id.recyclerviewforingrediant);
+        RecyclerView ingredRecyView = findViewById(R.id.recyclerviewforingrediant);
         RecyclerView detailRecyView = findViewById(R.id.recyclerviewfordetail);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        //ingredRecyView.setLayoutManager(linearLayoutManager);
-        detailRecyView.setLayoutManager(linearLayoutManager);
-        //RecyclerAdapter ingredAdapter = new RecyclerAdapter(instructionList)
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        ingredRecyView.setLayoutManager(linearLayoutManager1);
+        detailRecyView.setLayoutManager(linearLayoutManager2);
+        IngredientRecyclerAdapter ingredAdapter = new IngredientRecyclerAdapter(ingredientList,this);
         RecipeDetailRecyclerAdapter detailAdapter = new RecipeDetailRecyclerAdapter(instructionList,this);
-        getInformation(recipe,recipe.getIdMeal(),detailAdapter,this,detailRecyView);
-
+        getInstruction(recipe,recipe.getIdMeal(),detailAdapter);
+        getIngredient(recipe.getIdMeal(),ingredAdapter);
         detailRecyView.setAdapter(detailAdapter);
-        // 设置其他 TextView 显示其他信息...
+        ingredRecyView.setAdapter(ingredAdapter);
 
-        // 设置系统边距
+
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -59,11 +61,11 @@ public class RecipeDetail extends AppCompatActivity {
         });
     }
 
-    private void getInformation(Recipe recipe, int id, RecipeDetailRecyclerAdapter adapter, Context context,RecyclerView recyclerView){
+    private void getInstruction(Recipe recipe, int id, RecipeDetailRecyclerAdapter adapter){
 
         String instructionUrl = "https://studev.groept.be/api/a23PT214/get_insrtuction_byid/";
         instructionUrl = instructionUrl + String.valueOf(id);
-        Log.d("start", "getInformation: "+instructionUrl);
+        Log.d("start", "getInstruction: "+instructionUrl);
         connectionRequest.jsonGetRequest(instructionUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
             @Override
             public void onSuccess(JSONArray response) {
@@ -85,6 +87,42 @@ public class RecipeDetail extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
 
             }
+                catch( JSONException e )
+                {
+                    Log.e( "Database", e.getMessage(), e );
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("recipe", "onError: "+"creating a new recipe detail"+error );
+            }
+        });
+    }
+    private void getIngredient(int id, IngredientRecyclerAdapter adapter){
+
+        String ingredientUrl = "https://studev.groept.be/api/a23PT214/get_ingredient_byid/";
+        ingredientUrl = ingredientUrl + String.valueOf(id);
+        Log.d("start", "getInformation: "+ingredientUrl);
+        connectionRequest.jsonGetRequest(ingredientUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
+            @Override
+            public void onSuccess(JSONArray response) {
+                try {
+                    for( int i = 0; i < response.length(); i++ )
+                    {
+                        Log.d("test??", "onSuccess: ");
+                        Ingredient ingredient = new Ingredient();
+                        JSONObject curObject = response.getJSONObject( i );
+                        ingredient.setIdMeal(curObject.getInt("idMeal"));
+                        ingredient.setIdIng(curObject.getInt("idIng"));
+                        ingredient.setStrIng(curObject.getString("strIng"));
+                        ingredient.setStrAmount(curObject.getString("strAmount"));
+                        Log.d("getingredient", "onSuccess:");
+                        ingredientList.add(ingredient);
+                    }
+                    adapter.notifyDataSetChanged();
+
+                }
                 catch( JSONException e )
                 {
                     Log.e( "Database", e.getMessage(), e );
