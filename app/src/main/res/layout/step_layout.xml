@@ -24,6 +24,7 @@
 
         <ImageView
             android:id="@+id/process_photo"
+            android:tag="process_photo_1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="4:3"
@@ -35,7 +36,8 @@
             android:adjustViewBounds="true" />
 
         <TextView
-            android:id="@+id/upload_text"
+            android:id="@+id/upload_process_text"
+            android:tag="upload_process_text_1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#BBBBBB"
@@ -54,6 +56,7 @@
 
     <EditText
         android:id="@+id/step_instruction"
+        android:tag="step_instruction_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Add Instructions For This Step"

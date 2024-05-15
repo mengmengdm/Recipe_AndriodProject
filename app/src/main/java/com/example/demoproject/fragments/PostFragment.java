@@ -1,71 +1,45 @@
 package com.example.demoproject.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
-import android.text.InputType;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import androidx.constraintlayout.widget.ConstraintSet;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 
 import com.example.demoproject.R;
 
-import java.util.Objects;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PostFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PostFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    //Initialize Step Counter
-    private int stepcounter = 2;
+    // Initialize General Counter for Steps and Ingredients
+    private int ingredientCounter = 2;
+    private int stepCounter = 2;
+
 
     public PostFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PostFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PostFragment newInstance(String param1, String param2) {
         PostFragment fragment = new PostFragment();
         Bundle args = new Bundle();
@@ -85,8 +59,7 @@ public class PostFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate The Layout For This Fragment
         View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 
@@ -104,7 +77,7 @@ public class PostFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView textView = (TextView) view;
-                if (position == 0) { //The First Item Is A Prompt
+                if (position == 0) {//The First Item Is A Prompt
                     textView.setTextColor(Color.parseColor("#777777"));
                 } else {
                     textView.setTextColor(Color.BLACK);
@@ -124,22 +97,23 @@ public class PostFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         //Dynamically Add Ingredients
         Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
+        addIngredientButton.setOnClickListener(v -> {
+            View ingredientView = addViewToLayout(ingredientsLayout, R.layout.ingredient_layout);
+            updateIngredientView(ingredientView, ingredientCounter++);
+        });
 
-        addIngredientButton.setOnClickListener(v -> addViewToLayout(ingredientsLayout, R.layout.ingredient_layout));
-
-        ////Dynamically Add Steps
+        //Dynamically Add Steps
         Button addStepButton = view.findViewById(R.id.add_step_button);
         LinearLayoutCompat instructionsLayout = view.findViewById(R.id.instructions_layout);
-
         addStepButton.setOnClickListener(v -> {
             View stepView = addViewToLayout(instructionsLayout, R.layout.step_layout);
-            updateStepView(stepView, stepcounter++);
+            updateStepView(stepView, stepCounter++);
         });
     }
-
 
     private View addViewToLayout(LinearLayoutCompat layout, int layoutResId) {
         LayoutInflater inflater = LayoutInflater.from(layout.getContext());
@@ -148,17 +122,23 @@ public class PostFragment extends Fragment {
         return newView;
     }
 
-    private void updateStepView(View stepView, int stepNumber) {
+    private void updateStepView(View stepView, int number) {
         //Update Step Text
         TextView stepTextView = stepView.findViewById(R.id.step_text);
-        stepTextView.setText("Step " + stepNumber);
+        stepTextView.setText("Step " + number);
 
         //Generate Unique Id
         ImageView processPhoto = stepView.findViewById(R.id.process_photo);
-        TextView uploadTextView = stepView.findViewById(R.id.upload_text);
+        TextView uploadProcessText = stepView.findViewById(R.id.upload_process_text);
+        EditText stepInstruction = stepView.findViewById(R.id.step_instruction);
 
         processPhoto.setId(View.generateViewId());
-        uploadTextView.setId(View.generateViewId());
+        uploadProcessText.setId(View.generateViewId());
+
+        //Set Tags
+        processPhoto.setTag("process_photo_" + number);
+        uploadProcessText.setTag("upload_process_text_" + number);
+        stepInstruction.setTag("step_instruction_" + number);
 
         //Set Ratio Of ImageView
         ConstraintLayout.LayoutParams photoParams = (ConstraintLayout.LayoutParams) processPhoto.getLayoutParams();
@@ -166,15 +146,26 @@ public class PostFragment extends Fragment {
         processPhoto.setLayoutParams(photoParams);
 
         //Set Constraints And Visibility Of Upload Text
-        ConstraintLayout.LayoutParams uploadTextParams = (ConstraintLayout.LayoutParams) uploadTextView.getLayoutParams();
+        ConstraintLayout.LayoutParams uploadTextParams = (ConstraintLayout.LayoutParams) uploadProcessText.getLayoutParams();
         uploadTextParams.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT;
         uploadTextParams.height = 0;
         uploadTextParams.topToTop = processPhoto.getId();
         uploadTextParams.startToStart = processPhoto.getId();
         uploadTextParams.endToEnd = processPhoto.getId();
         uploadTextParams.bottomToBottom = processPhoto.getId();
-        uploadTextView.setLayoutParams(uploadTextParams);
-        uploadTextView.setVisibility(View.VISIBLE);
-        uploadTextView.setGravity(Gravity.CENTER);
+        uploadProcessText.setLayoutParams(uploadTextParams);
+        uploadProcessText.setVisibility(View.VISIBLE);
+        uploadProcessText.setGravity(Gravity.CENTER);
+    }
+
+    private void updateIngredientView(View ingredientView, int number) {
+        EditText ingredientName = ingredientView.findViewById(R.id.ingredient_name);
+        EditText ingredientAmount = ingredientView.findViewById(R.id.ingredient_amount);
+
+        //Set Tags
+        ingredientName.setTag("ingredient_name_" + number);
+        ingredientAmount.setTag("ingredient_amount_" + number);
     }
 }
+
+
