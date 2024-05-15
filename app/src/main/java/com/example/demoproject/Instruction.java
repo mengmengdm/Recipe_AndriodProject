@@ -35,10 +35,11 @@ public class Instruction {
     }
 
     public void setStepTime(String stepTime) {
-        if (stepTime.isEmpty()) {
+        if (stepTime.equals("null") ){
+            this.stepTime = "";
+        }
+        else{
             this.stepTime = stepTime;
-        } else {
-            this.stepTime="";
         }
     }
 

@@ -41,6 +41,7 @@ public class Recipe implements Parcelable {
         dest.writeString(strCategory);
         dest.writeInt(numIng);
         dest.writeInt(numInst);
+        dest.writeString(base64String);
     }
 
     public enum Category{
@@ -49,6 +50,7 @@ public class Recipe implements Parcelable {
     private String strCategory;
     private int numIng;
     private int numInst;
+    private String base64String;
 
     public int getNumIng() {
         return numIng;
@@ -79,6 +81,7 @@ public class Recipe implements Parcelable {
         strCategory = in.readString();
         numIng = in.readInt();
         numInst = in.readInt();
+        base64String = in.readString();
     }
 
     public int getIdMeal() {
@@ -101,6 +104,7 @@ public class Recipe implements Parcelable {
     }
 
     public void setBitmap(String base64String){
+        this.base64String = base64String;
         byte[] imageBytes = Base64.decode( base64String, Base64.DEFAULT );
         this.bitmap = BitmapFactory.decodeByteArray( imageBytes, 0, imageBytes.length );
         Log.d("recipe", "setBitmap: "+String.valueOf(bitmap));
@@ -108,5 +112,5 @@ public class Recipe implements Parcelable {
     public Bitmap getBitmap(){
         return bitmap;
     }
-
+    public String getBase64String(){return base64String;}
 }

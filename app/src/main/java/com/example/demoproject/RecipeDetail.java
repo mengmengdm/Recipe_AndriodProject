@@ -1,7 +1,11 @@
 package com.example.demoproject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -37,8 +41,14 @@ public class RecipeDetail extends AppCompatActivity {
         connectionRequest = new ConnectionRequest(this);
         // get the recipe class pass from the previous fragment
         recipe = getIntent().getParcelableExtra("recipe");
+
         TextView nameTextView = findViewById(R.id.recipenametextview);
+        ImageView mainpicimageview = findViewById(R.id.mainpicimageview);
+
         nameTextView.setText(recipe.getName());
+        Bitmap bitmap = transBitmap(recipe.getBase64String());
+        mainpicimageview.setImageBitmap(bitmap);
+
         RecyclerView ingredRecyView = findViewById(R.id.recyclerviewforingrediant);
         RecyclerView detailRecyView = findViewById(R.id.recyclerviewfordetail);
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
@@ -81,7 +91,7 @@ public class RecipeDetail extends AppCompatActivity {
                         instruction.setStepTime(curObject.getString("stepTime"));
                         instruction.setTimeScale(curObject.getString("timeScale"));
                         instruction.setStepImg(curObject.getString("stepImg"));
-                        Log.d("getins", "onSuccess:");
+                        Log.d("getins", "onSuccess:"+instruction.getStepTime());
                         instructionList.add(instruction);
                     }
                     adapter.notifyDataSetChanged();
@@ -135,4 +145,11 @@ public class RecipeDetail extends AppCompatActivity {
             }
         });
     }
+    public Bitmap transBitmap(String base64String){
+        Bitmap bitmap;
+        byte[] imageBytes = Base64.decode( base64String, Base64.DEFAULT );
+        bitmap = BitmapFactory.decodeByteArray( imageBytes, 0, imageBytes.length );
+        return bitmap;
+    }
 }
+
