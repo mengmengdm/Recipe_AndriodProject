@@ -14,17 +14,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/recipenametextview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Recipe Name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintTop_toBottomOf="@+id/mainpicimageview"
         app:layout_constraintStart_toStartOf="parent"
-        />
-
+        android:textStyle="bold"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -42,8 +42,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Ingredient List"
-                app:layout_constraintTop_toBottomOf="@+id/recipenametextview"
-                />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerviewforingrediant"
                 android:layout_width="match_parent"
@@ -52,12 +53,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="STEP:"/>
+                android:text="STEP:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerviewfordetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Cooking"
+                android:textStyle="bold"
+                />
 
         </LinearLayout>
 
