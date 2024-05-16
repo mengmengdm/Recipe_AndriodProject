@@ -3,6 +3,7 @@ package com.example.demoproject.fragments;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,6 +99,16 @@ public class PostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Button publish_recipe_button = view.findViewById(R.id.publish_recipe_button);
+
+        publish_recipe_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tag = "ingredient_name_"+String.valueOf(ingredientCounter);
+                EditText testedit = view.findViewWithTag(tag);
+                Log.d("uploadall", "onClick: "+testedit.getText());
+            }
+        });
         //Dynamically Add Ingredients
         Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
