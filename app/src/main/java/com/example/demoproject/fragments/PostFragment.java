@@ -22,7 +22,12 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.demoproject.Ingredient;
+import com.example.demoproject.Instruction;
 import com.example.demoproject.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PostFragment extends Fragment {
 
@@ -35,6 +40,8 @@ public class PostFragment extends Fragment {
     // Initialize General Counter for Steps and Ingredients
     private int ingredientCounter = 2;
     private int stepCounter = 2;
+    private List<Ingredient>ingredientList  = new ArrayList<>();
+    private List<Instruction> instructionList = new ArrayList<>();
 
 
     public PostFragment() {
@@ -104,15 +111,21 @@ public class PostFragment extends Fragment {
         publish_recipe_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tag = "ingredient_name_"+String.valueOf(ingredientCounter);
+                String tag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
                 EditText testedit = view.findViewWithTag(tag);
-                Log.d("uploadall", "onClick: "+testedit.getText());
+                if (testedit != null) {
+                    String text = testedit.getText().toString();
+                    Log.d("uploadall", "onClick: " + text);
+                } else {
+                    Log.d("uploadall", "onClick: EditText with tag " + tag + " not found");
+                }
             }
         });
         //Dynamically Add Ingredients
         Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
         addIngredientButton.setOnClickListener(v -> {
+            addIngredToList()
             View ingredientView = addViewToLayout(ingredientsLayout, R.layout.ingredient_layout);
             updateIngredientView(ingredientView, ingredientCounter++);
         });
@@ -174,9 +187,45 @@ public class PostFragment extends Fragment {
         EditText ingredientAmount = ingredientView.findViewById(R.id.ingredient_amount);
 
         //Set Tags
-        ingredientName.setTag("ingredient_name_" + number);
-        ingredientAmount.setTag("ingredient_amount_" + number);
+        ingredientName.setTag("ingredient_name_" + String.valueOf(number));
+        ingredientAmount.setTag("ingredient_amount_" + String.valueOf(number));
+        Log.d("uploadall", "updateIngredientView with tag"+ingredientName.getTag());
     }
+    private void addIngredToList(View view){
+        String tag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
+        EditText  = view.findViewWithTag(tag);
+        EditText
+        if (testedit != null) {
+            String text = testedit.getText().toString();
+            Log.d("uploadall", "onClick: " + text);
+        } else {
+            Log.d("uploadall", "onClick: EditText with tag " + tag + " not found");
+        }
+        Ingredient ingredient = new Ingredient();
+        ingredient.setIdIng(ingredientCounter-1);
+        ingredient.setStrIng(name);
+        ingredient.setStrAmount(amount);
+        ingredientList.add(ingredient);
+    }
+    private void addInstructToList(String detail, String base64String){
+        Instruction instruction = new Instruction();
+        instruction.setNumStep(stepCounter-1);
+        //instruction.setStepImg(base64String);
+        //instruction.setStepTime("1");
+        instructionList.add(instruction);
+    }
+    public String findStringByTag(String tag,View view){
+        String editTextValue = "";
+        EditText editText = view.findViewWithTag(tag);
+        if (editText != null){
+            editTextValue = editText.getText().toString();
+            Log.d("getEditText", "findStringByTag: ");
+        } else{
+
+        }
+        return editTextValue;
+    }
+
 }
 
 
