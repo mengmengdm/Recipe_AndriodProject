@@ -85,11 +85,9 @@ public class SignupActivity extends AppCompatActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                Log.d("SignupActivity", "Attempting to start LoginActivity");
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
-                Log.d("SignupActivity", "LoginActivity started");
             }
 
             @Override
