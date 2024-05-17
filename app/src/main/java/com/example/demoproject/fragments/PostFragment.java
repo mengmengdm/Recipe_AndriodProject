@@ -108,32 +108,20 @@ public class PostFragment extends Fragment {
 
         Button publish_recipe_button = view.findViewById(R.id.publish_recipe_button);
 
-        publish_recipe_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String tag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
-                EditText testedit = view.findViewWithTag(tag);
-                if (testedit != null) {
-                    String text = testedit.getText().toString();
-                    Log.d("uploadall", "onClick: " + text);
-                } else {
-                    Log.d("uploadall", "onClick: EditText with tag " + tag + " not found");
-                }
-            }
-        });
         //Dynamically Add Ingredients
         Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
         addIngredientButton.setOnClickListener(v -> {
-            addIngredToList()
+            addIngredToList(view);
             View ingredientView = addViewToLayout(ingredientsLayout, R.layout.ingredient_layout);
             updateIngredientView(ingredientView, ingredientCounter++);
         });
 
-        //Dynamically Add Steps
+        //Dynamically Add Instructions
         Button addStepButton = view.findViewById(R.id.add_step_button);
         LinearLayoutCompat instructionsLayout = view.findViewById(R.id.instructions_layout);
         addStepButton.setOnClickListener(v -> {
+            addInstructToList(view);
             View stepView = addViewToLayout(instructionsLayout, R.layout.step_layout);
             updateStepView(stepView, stepCounter++);
         });
@@ -160,9 +148,9 @@ public class PostFragment extends Fragment {
         uploadProcessText.setId(View.generateViewId());
 
         //Set Tags
-        processPhoto.setTag("process_photo_" + number);
-        uploadProcessText.setTag("upload_process_text_" + number);
-        stepInstruction.setTag("step_instruction_" + number);
+        processPhoto.setTag("process_photo_" + String.valueOf(number));
+        uploadProcessText.setTag("upload_process_text_" + String.valueOf(number));
+        stepInstruction.setTag("step_instruction_" + String.valueOf(number));
 
         //Set Ratio Of ImageView
         ConstraintLayout.LayoutParams photoParams = (ConstraintLayout.LayoutParams) processPhoto.getLayoutParams();
@@ -192,24 +180,22 @@ public class PostFragment extends Fragment {
         Log.d("uploadall", "updateIngredientView with tag"+ingredientName.getTag());
     }
     private void addIngredToList(View view){
-        String tag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
-        EditText  = view.findViewWithTag(tag);
-        EditText
-        if (testedit != null) {
-            String text = testedit.getText().toString();
-            Log.d("uploadall", "onClick: " + text);
-        } else {
-            Log.d("uploadall", "onClick: EditText with tag " + tag + " not found");
-        }
+        String nameTag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
+        String amountTag = "ingredient_amount_" + String.valueOf(ingredientCounter-1);
+        String name = findStringByTag(nameTag,view);
+        String amount = findStringByTag(amountTag,view);
         Ingredient ingredient = new Ingredient();
         ingredient.setIdIng(ingredientCounter-1);
         ingredient.setStrIng(name);
         ingredient.setStrAmount(amount);
         ingredientList.add(ingredient);
     }
-    private void addInstructToList(String detail, String base64String){
+    private void addInstructToList(View view){
         Instruction instruction = new Instruction();
+        String instTag = "step_instruction_"+ String.valueOf(stepCounter-1);
+        String inst = findStringByTag(instTag,view);
         instruction.setNumStep(stepCounter-1);
+        instruction.setIntstruct(inst);
         //instruction.setStepImg(base64String);
         //instruction.setStepTime("1");
         instructionList.add(instruction);
@@ -219,13 +205,19 @@ public class PostFragment extends Fragment {
         EditText editText = view.findViewWithTag(tag);
         if (editText != null){
             editTextValue = editText.getText().toString();
-            Log.d("getEditText", "findStringByTag: ");
+            Log.d("getEditText", "findStringByTag: "+tag+": "+editTextValue);
         } else{
-
+            Log.e("getEditText", "fail to findStringByTag: "+ tag);
         }
         return editTextValue;
     }
 
+    private void publishStrings(){
+
+    }
+    private void publishImages(){
+
+    }
 }
 
 

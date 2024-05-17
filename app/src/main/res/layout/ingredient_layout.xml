@@ -24,7 +24,7 @@
 
         <EditText
             android:id="@+id/ingredient_amount"
-            android:tag="ingredient_amount_2"
+            android:tag="ingredient_amount_1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
