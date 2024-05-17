@@ -1,8 +1,13 @@
 package com.example.demoproject.fragments;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -40,6 +47,8 @@ public class PostFragment extends Fragment {
     // Initialize General Counter for Steps and Ingredients
     private int ingredientCounter = 2;
     private int stepCounter = 2;
+    private int PICK_IMAGE_REQUEST = 111;
+
     private List<Ingredient>ingredientList  = new ArrayList<>();
     private List<Instruction> instructionList = new ArrayList<>();
 
@@ -212,11 +221,36 @@ public class PostFragment extends Fragment {
         return editTextValue;
     }
 
+
     private void publishStrings(){
 
     }
     private void publishImages(){
 
+    }
+
+    private final ActivityResultLauncher<Intent> takePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+    result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            setPic();
+        }
+    }
+    );
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scale = ((float) newWidth) / width;
+
+        // We create a matrix to transform the image
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+
+        // Create the new bitmap
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }
 
