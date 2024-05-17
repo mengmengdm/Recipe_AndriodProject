@@ -120,6 +120,7 @@ public class PostFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         ImageView imageView1 = view.findViewWithTag("process_photo_1");
         TextView textView1 = view.findViewWithTag("upload_process_text_1");
         imageViewList.add(imageView1);
@@ -167,6 +168,8 @@ public class PostFragment extends Fragment {
         ImageView processPhoto = stepView.findViewById(R.id.process_photo);
         TextView uploadProcessText = stepView.findViewById(R.id.upload_process_text);
         EditText stepInstruction = stepView.findViewById(R.id.step_instruction);
+        EditText time = stepView.findViewById(R.id.time);
+        EditText timeScale = stepView.findViewById(R.id.time_unit);
 
         processPhoto.setId(View.generateViewId());
         uploadProcessText.setId(View.generateViewId());
@@ -175,8 +178,10 @@ public class PostFragment extends Fragment {
         processPhoto.setTag("process_photo_" + String.valueOf(number));
         uploadProcessText.setTag("upload_process_text_" + String.valueOf(number));
         stepInstruction.setTag("step_instruction_" + String.valueOf(number));
+        time.setTag("time_" + String.valueOf(number));
+        timeScale.setTag("time_unit_" + String.valueOf(number));
 
-        //set onClickLisenter
+        //Set OnClickListener
         processPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +217,7 @@ public class PostFragment extends Fragment {
         ingredientAmount.setTag("ingredient_amount_" + String.valueOf(number));
         Log.d("uploadall", "updateIngredientView with tag"+ingredientName.getTag());
     }
+
     private void addIngredToList(View view){
         String nameTag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
         String amountTag = "ingredient_amount_" + String.valueOf(ingredientCounter-1);

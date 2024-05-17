@@ -65,4 +65,38 @@
         android:textStyle="bold"
         android:inputType="textMultiLine"
         android:background="@android:color/transparent"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/time"
+            android:tag="time_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Time"
+            android:imeOptions="actionDone"
+            android:textColorHint="#777777"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/time_unit"
+            android:tag="time_unit_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Unit"
+            android:imeOptions="actionDone"
+            android:textColorHint="#777777"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:inputType="text" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 </androidx.appcompat.widget.LinearLayoutCompat>
