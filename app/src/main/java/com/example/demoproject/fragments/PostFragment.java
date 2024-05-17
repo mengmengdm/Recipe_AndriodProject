@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,6 +34,7 @@ import com.example.demoproject.Ingredient;
 import com.example.demoproject.Instruction;
 import com.example.demoproject.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +49,12 @@ public class PostFragment extends Fragment {
     // Initialize General Counter for Steps and Ingredients
     private int ingredientCounter = 2;
     private int stepCounter = 2;
-    private int PICK_IMAGE_REQUEST = 111;
-
+    private ImageView finishImageView;
+    private TextView finishTextView;
+    private ImageView stepImageView;
+    private TextView stepTextView;
+    private List<ImageView> imageViewList = new ArrayList<>();
+    private List<TextView> textViewList = new ArrayList<>();
     private List<Ingredient>ingredientList  = new ArrayList<>();
     private List<Instruction> instructionList = new ArrayList<>();
 
@@ -114,9 +120,18 @@ public class PostFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        ImageView imageView1 = view.findViewWithTag("process_photo_1");
+        TextView textView1 = view.findViewWithTag("upload_process_text_1");
+        imageViewList.add(imageView1);
+        textViewList.add(textView1);
         Button publish_recipe_button = view.findViewById(R.id.publish_recipe_button);
-
+        imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchChoosePictureIntent(view);
+                Log.d("PostFragment", "onClick: "+imageView1.getTag());
+            }
+        });
         //Dynamically Add Ingredients
         Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
@@ -132,7 +147,7 @@ public class PostFragment extends Fragment {
         addStepButton.setOnClickListener(v -> {
             addInstructToList(view);
             View stepView = addViewToLayout(instructionsLayout, R.layout.step_layout);
-            updateStepView(stepView, stepCounter++);
+            updateStepView(stepView, stepCounter++,view);
         });
     }
 
@@ -143,7 +158,7 @@ public class PostFragment extends Fragment {
         return newView;
     }
 
-    private void updateStepView(View stepView, int number) {
+    private void updateStepView(View stepView, int number,View view) {
         //Update Step Text
         TextView stepTextView = stepView.findViewById(R.id.step_text);
         stepTextView.setText("Step " + number);
@@ -160,6 +175,15 @@ public class PostFragment extends Fragment {
         processPhoto.setTag("process_photo_" + String.valueOf(number));
         uploadProcessText.setTag("upload_process_text_" + String.valueOf(number));
         stepInstruction.setTag("step_instruction_" + String.valueOf(number));
+
+        //set onClickLisenter
+        processPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchChoosePictureIntent(view);
+                Log.d("PostFragment", "onClick: "+stepTextView.getTag());
+            }
+        });
 
         //Set Ratio Of ImageView
         ConstraintLayout.LayoutParams photoParams = (ConstraintLayout.LayoutParams) processPhoto.getLayoutParams();
@@ -229,14 +253,51 @@ public class PostFragment extends Fragment {
 
     }
 
-    private final ActivityResultLauncher<Intent> takePictureLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> pickPictureLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
     result -> {
-        if (result.getResultCode() == RESULT_OK) {
-            setPic();
+        if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
+            Uri selectedImage = result.getData().getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                if (bitmap != null) {
+                    Log.d("PostFragment", "Bitmap is not null");
+                    stepImageView.setImageBitmap(bitmap);
+                    stepTextView.setVisibility(View.INVISIBLE);
+                    Log.d("PostFragment", "Bitmap set to ImageView");
+                    Log.d("PostFragment", bitmap.toString());
+                } else {
+                    Log.e("PostFragment", "Bitmap is null");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     );
+
+    private void setCurrent(View view) {
+        String imageTag = "process_photo_" +String.valueOf(stepCounter-1);
+        String textTag = "upload_process_text_" +String.valueOf(stepCounter-1);
+        stepImageView = view.findViewWithTag(imageTag);
+        stepTextView = view.findViewWithTag(textTag);
+
+        if (stepImageView == null) {
+            Log.e("PostFragment", "stepImageView is null");
+        }
+
+        if (stepTextView == null) {
+            Log.e("PostFragment", "stepTextView is null");
+        }
+    }
+
+
+    private void dispatchChoosePictureIntent(View view) {
+        setCurrent(view);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickPictureLauncher.launch(intent);
+    }
+
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth) {
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -252,6 +313,15 @@ public class PostFragment extends Fragment {
         bm.recycle();
         return resizedBitmap;
     }
+
+    View.OnClickListener loadImage = new View.OnClickListener() {
+        ImageView imageView;
+        @Override
+        public void onClick(View v) {
+            //dispatchChoosePictureIntent();
+            Log.d("PostFragment", "onClick: "+imageView.getTag());
+        }
+    };
 }
 
 
