@@ -4,7 +4,6 @@ import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,6 +15,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConnectionRequest {
     private RequestQueue requestQueue;
@@ -81,7 +83,26 @@ public class ConnectionRequest {
                 });
         requestQueue.add(imageRequest);
 }
-
+    public void uploadPostRequest(String url,HashMap<String, String> params,final MyRequestCallback callback){
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.toString());
+                    }
+                }) {
+            protected Map<String, String> getParams() {
+                return params;
+            }
+        };
+        requestQueue.add(postRequest);
+    }
     public interface MyRequestCallback<T> {
         void onSuccess(T response);
         void onError(String error);

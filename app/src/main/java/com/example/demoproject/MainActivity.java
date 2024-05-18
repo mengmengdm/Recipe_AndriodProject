@@ -5,7 +5,7 @@ username: a23PT214
 password: secret
 
 apis:
-https://studev.groept.be/api/a23PT214/test
+https://studev.groept.be/api/a23PT214/
 
 gitlab page(andriod):
 https://gitlab.kuleuven.be/

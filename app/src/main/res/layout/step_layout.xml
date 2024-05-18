@@ -58,7 +58,7 @@
         android:tag="step_instruction_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add Instructions For This Step"
+        android:hint="Add Instructions For This Step (Optional)"
         android:imeOptions="actionDone"
         android:textColorHint="#777777"
         android:textSize="15sp"

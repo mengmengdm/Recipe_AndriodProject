@@ -1,5 +1,6 @@
 package com.example.demoproject.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -33,9 +34,17 @@ import androidx.fragment.app.Fragment;
 import com.example.demoproject.Ingredient;
 import com.example.demoproject.Instruction;
 import com.example.demoproject.R;
+import com.example.demoproject.Recipe;
+import com.example.demoproject.Uploadable;
+import com.example.demoproject.connection.ConnectionRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PostFragment extends Fragment {
@@ -49,14 +58,17 @@ public class PostFragment extends Fragment {
     // Initialize General Counter for Steps and Ingredients
     private int ingredientCounter = 2;
     private int stepCounter = 2;
+    private int latestInstruct = 0;
+    private int latestIngred = 0;
     private ImageView finishImageView;
     private TextView finishTextView;
     private ImageView stepImageView;
     private TextView stepTextView;
+    private ConnectionRequest connectionRequest;
     private List<ImageView> imageViewList = new ArrayList<>();
     private List<TextView> textViewList = new ArrayList<>();
-    private List<Ingredient>ingredientList  = new ArrayList<>();
-    private List<Instruction> instructionList = new ArrayList<>();
+    private ArrayList<Uploadable>ingredientList  = new ArrayList<>();
+    private ArrayList<Uploadable> instructionList = new ArrayList<>();
 
 
     public PostFragment() {
@@ -85,6 +97,10 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate The Layout For This Fragment
         View rootView = inflater.inflate(R.layout.fragment_post, container, false);
+        //refresh latestdata
+        Activity activity = requireActivity();
+        connectionRequest = new ConnectionRequest(activity);
+        getLatestData(connectionRequest);
 
         //Get Spinner Control
         Spinner categorySpinner = rootView.findViewById(R.id.category_spinner);
@@ -123,14 +139,30 @@ public class PostFragment extends Fragment {
 
         ImageView imageView1 = view.findViewWithTag("process_photo_1");
         TextView textView1 = view.findViewWithTag("upload_process_text_1");
+        finishImageView = view.findViewById(R.id.finished_photo);
+        finishTextView = view.findViewById(R.id.finished_text);
         imageViewList.add(imageView1);
         textViewList.add(textView1);
         Button publish_recipe_button = view.findViewById(R.id.publish_recipe_button);
+        publish_recipe_button.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        publishRecipe(connectionRequest,ingredientList);
+                    }
+                }
+        );
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchChoosePictureIntent(view);
                 Log.d("PostFragment", "onClick: "+imageView1.getTag());
+            }
+        });
+        finishImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishChoosePictureIntent(view);
             }
         });
         //Dynamically Add Ingredients
@@ -224,6 +256,7 @@ public class PostFragment extends Fragment {
         String name = findStringByTag(nameTag,view);
         String amount = findStringByTag(amountTag,view);
         Ingredient ingredient = new Ingredient();
+        ingredient.setIdMeal(latestIngred+1);
         ingredient.setIdIng(ingredientCounter-1);
         ingredient.setStrIng(name);
         ingredient.setStrAmount(amount);
@@ -233,6 +266,7 @@ public class PostFragment extends Fragment {
         Instruction instruction = new Instruction();
         String instTag = "step_instruction_"+ String.valueOf(stepCounter-1);
         String inst = findStringByTag(instTag,view);
+        instruction.setIdMeal(latestInstruct+1);
         instruction.setNumStep(stepCounter-1);
         instruction.setIntstruct(inst);
         //instruction.setStepImg(base64String);
@@ -250,13 +284,80 @@ public class PostFragment extends Fragment {
         }
         return editTextValue;
     }
-
-
-    private void publishStrings(){
-
+    private void getLatestData(ConnectionRequest connectionRequest){
+        String ingredurl ="https://studev.groept.be/api/a23PT214/get_latest_instruct&ingred";
+        connectionRequest.jsonGetRequest(ingredurl,
+                new ConnectionRequest.MyRequestCallback<JSONArray>() {
+                    @Override
+                    public void onSuccess(JSONArray response) {
+                        try {
+                            //String responseString = "";
+                            for( int i = 0; i < response.length(); i++ )
+                            {
+                                JSONObject curObject = response.getJSONObject( i );
+                                latestIngred=curObject.getInt("idMeal_ing");
+                                latestInstruct=curObject.getInt("idMeal_inst");
+                            }
+                        }
+                        catch( JSONException e )
+                        {
+                            Log.e( "PostFragment", e.getMessage(), e );
+                        }
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Log.e( "PostFragment", error );
+                    }
+                });
     }
-    private void publishImages(){
 
+    private void publishInstruction(ConnectionRequest connectionRequest, HashMap<String,String> params){
+        String instrutUrl = "https://studev.groept.be/api/a23PT214/upload_instrut";
+        connectionRequest.uploadPostRequest(instrutUrl, params,
+                new ConnectionRequest.MyRequestCallback() {
+                    @Override
+                    public void onSuccess(Object response) {
+                        Log.d("postinstruct", "onSuccess: "+response.toString());
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Log.e("postinstruct", "onError: "+error );
+                    }
+                });
+    }
+    private void publishIngred(ConnectionRequest connectionRequest, HashMap<String,String> params){
+        String ingredUrl = "https://studev.groept.be/api/a23PT214/upload_ingred";
+        connectionRequest.uploadPostRequest(ingredUrl, params,
+                new ConnectionRequest.MyRequestCallback() {
+                    @Override
+                    public void onSuccess(Object response) {
+                        Log.d("postingred", "onSuccess: "+response.toString());
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Log.e("postingred", "onError: "+error );
+                    }
+                });
+    }
+    private void publishRecipe(ConnectionRequest connectionRequest,ArrayList<Uploadable> ingredList){
+        List<HashMap> ingredHashMapList = getHashMap(ingredList);
+        //List<HashMap> instructHashMapList = getHashMap(instrutList);
+        for (int i = 0; i<ingredList.size();i++){
+            publishIngred(connectionRequest,ingredHashMapList.get(i));
+        }
+//        for (int i = 0; i<ingredList.size();i++){
+//            publishInstruction(connectionRequest,instructHashMapList.get(i));
+//        }
+    }
+    private List<HashMap> getHashMap(ArrayList<Uploadable> arrayList) {
+        List<HashMap> hashMapList = new ArrayList<>();
+        int length = arrayList.size();
+        HashMap<String,String> params= new HashMap<>();
+        for (int i = 0; i<length; i++){
+            params = arrayList.get(i).getHashMap();
+            hashMapList.add(params);
+        }
+        return hashMapList;
     }
 
     private final ActivityResultLauncher<Intent> pickPictureLauncher = registerForActivityResult(
@@ -281,7 +382,38 @@ public class PostFragment extends Fragment {
         }
     }
     );
-
+    private final ActivityResultLauncher<Intent> finishPictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
+                    Uri selectedImage = result.getData().getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                        if (bitmap != null) {
+                            Log.d("PostFragment", "Bitmap is not null");
+                            finishImageView.setImageBitmap(bitmap);
+                            finishTextView.setVisibility(View.INVISIBLE);
+                            Log.d("PostFragment", "Bitmap set to ImageView");
+                            Log.d("PostFragment", bitmap.toString());
+                        } else {
+                            Log.e("PostFragment", "Bitmap is null");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
+    private void dispatchChoosePictureIntent(View view) {
+        setCurrent(view);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickPictureLauncher.launch(intent);
+    }
+    private void finishChoosePictureIntent(View view) {
+        setCurrent(view);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        finishPictureLauncher.launch(intent);
+    }
     private void setCurrent(View view) {
         String imageTag = "process_photo_" +String.valueOf(stepCounter-1);
         String textTag = "upload_process_text_" +String.valueOf(stepCounter-1);
@@ -298,11 +430,7 @@ public class PostFragment extends Fragment {
     }
 
 
-    private void dispatchChoosePictureIntent(View view) {
-        setCurrent(view);
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickPictureLauncher.launch(intent);
-    }
+
 
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth) {
         int width = bm.getWidth();
