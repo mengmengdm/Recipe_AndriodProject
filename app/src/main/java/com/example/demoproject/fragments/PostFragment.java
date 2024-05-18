@@ -250,28 +250,36 @@ public class PostFragment extends Fragment {
         Log.d("uploadall", "updateIngredientView with tag"+ingredientName.getTag());
     }
 
-    private void addIngredToList(View view){
-        String nameTag = "ingredient_name_" + String.valueOf(ingredientCounter-1);
-        String amountTag = "ingredient_amount_" + String.valueOf(ingredientCounter-1);
+    private void addIngredToList(View view,int counter,int latest){
+        String nameTag = "ingredient_name_" + String.valueOf(counter);
+        String amountTag = "ingredient_amount_" + String.valueOf(counter);
         String name = findStringByTag(nameTag,view);
         String amount = findStringByTag(amountTag,view);
         Ingredient ingredient = new Ingredient();
-        ingredient.setIdMeal(latestIngred+1);
-        ingredient.setIdIng(ingredientCounter-1);
+        ingredient.setIdMeal(latest+1);
+        ingredient.setIdIng(counter);
         ingredient.setStrIng(name);
         ingredient.setStrAmount(amount);
         ingredientList.add(ingredient);
     }
-    private void addInstructToList(View view){
+    private void addInstructToList(View view,int counter,int latest){
         Instruction instruction = new Instruction();
-        String instTag = "step_instruction_"+ String.valueOf(stepCounter-1);
+        String instTag = "step_instruction_"+ String.valueOf(counter);
         String inst = findStringByTag(instTag,view);
-        instruction.setIdMeal(latestInstruct+1);
-        instruction.setNumStep(stepCounter-1);
+        instruction.setIdMeal(latest+1);
+        instruction.setNumStep(counter);
         instruction.setIntstruct(inst);
         //instruction.setStepImg(base64String);
         //instruction.setStepTime("1");
         instructionList.add(instruction);
+    }
+    private void finaladdList(View view){
+        Instruction instruction = new Instruction();
+        Ingredient ingredient = new Ingredient();
+        String nameTag = "ingredient_name_" + String.valueOf(ingredientCounter);
+        String amountTag = "ingredient_amount_" + String.valueOf(ingredientCounter);
+        String name = findStringByTag(nameTag,view);
+        String amount = findStringByTag(amountTag,view);
     }
     public String findStringByTag(String tag,View view){
         String editTextValue = "";

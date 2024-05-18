@@ -3,12 +3,15 @@ package com.example.demoproject;
 import java.util.HashMap;
 
 public class Ingredient implements Uploadable{
+
     private int idMeal;
     private int idIng;
     private String strIng;
     private String strAmount;
     private HashMap<String, String> uploadHashMap;
-
+    public Ingredient(){
+        uploadHashMap = new HashMap<>();
+    }
     public int getIdMeal() {
         return idMeal;
     }
