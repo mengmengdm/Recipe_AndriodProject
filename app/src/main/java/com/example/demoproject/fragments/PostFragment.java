@@ -148,6 +148,8 @@ public class PostFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        finaladdList(view);
                         publishRecipe(connectionRequest,ingredientList);
                     }
                 }
@@ -169,7 +171,7 @@ public class PostFragment extends Fragment {
         Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
         addIngredientButton.setOnClickListener(v -> {
-            addIngredToList(view);
+            //addIngredToList(view);
             View ingredientView = addViewToLayout(ingredientsLayout, R.layout.ingredient_layout);
             updateIngredientView(ingredientView, ingredientCounter++);
         });
@@ -178,7 +180,7 @@ public class PostFragment extends Fragment {
         Button addStepButton = view.findViewById(R.id.add_step_button);
         LinearLayoutCompat instructionsLayout = view.findViewById(R.id.instructions_layout);
         addStepButton.setOnClickListener(v -> {
-            addInstructToList(view);
+            //addInstructToList(view);
             View stepView = addViewToLayout(instructionsLayout, R.layout.step_layout);
             updateStepView(stepView, stepCounter++,view);
         });
@@ -274,12 +276,14 @@ public class PostFragment extends Fragment {
         instructionList.add(instruction);
     }
     private void finaladdList(View view){
-        Instruction instruction = new Instruction();
-        Ingredient ingredient = new Ingredient();
-        String nameTag = "ingredient_name_" + String.valueOf(ingredientCounter);
-        String amountTag = "ingredient_amount_" + String.valueOf(ingredientCounter);
-        String name = findStringByTag(nameTag,view);
-        String amount = findStringByTag(amountTag,view);
+        for (int i = 1; i < ingredientCounter; i++ ){
+            addIngredToList(view, i,latestIngred);
+        }
+        Log.d("finaladd", "finaladdList: "+"ingred added");
+        for (int i = 1; i < stepCounter; i++ ){
+            addInstructToList(view, i,latestInstruct);
+        }
+        Log.d("finaladd", "finaladdList: "+"instrut added");
     }
     public String findStringByTag(String tag,View view){
         String editTextValue = "";
@@ -305,6 +309,7 @@ public class PostFragment extends Fragment {
                                 JSONObject curObject = response.getJSONObject( i );
                                 latestIngred=curObject.getInt("idMeal_ing");
                                 latestInstruct=curObject.getInt("idMeal_inst");
+                                Log.d("PostFragment", "onSuccess: "+"latestIngred:"+latestIngred+"latestInstruct:"+latestInstruct);
                             }
                         }
                         catch( JSONException e )
