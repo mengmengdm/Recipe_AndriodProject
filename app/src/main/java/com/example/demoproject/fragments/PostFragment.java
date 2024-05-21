@@ -1,7 +1,9 @@
 package com.example.demoproject.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -27,8 +29,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.demoproject.Ingredient;
@@ -164,7 +168,7 @@ public class PostFragment extends Fragment {
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchChoosePictureIntent(view);
+                showImagePickDialog(view);
                 Log.d("PostFragment", "onClick: "+imageView1.getTag());
             }
         });
@@ -226,7 +230,7 @@ public class PostFragment extends Fragment {
         processPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchChoosePictureIntent(view);
+                showImagePickDialog(view);
                 Log.d("PostFragment", "onClick: "+stepTextView.getTag());
             }
         });
@@ -408,6 +412,71 @@ public class PostFragment extends Fragment {
         return hashMapList;
     }
 
+    public void showImagePickDialog(View view) {
+        setCurrent(view); // Set the current step before showing the dialog
+        CharSequence[] items = {"Take Photo", "Choose From Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add Photo");
+        builder.setItems(items, (dialog, which) -> {
+            if ("Take Photo".equals(items[which])) {
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestCameraPermission();
+                } else {
+                    launchCamera();
+                }
+            } else if ("Choose From Gallery".equals(items[which])) {
+                dispatchChoosePictureIntent(view);
+            } else {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void requestCameraPermission() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            // 向用户展示一个对话框解释为什么需要这个权限
+            new AlertDialog.Builder(getContext())
+                    .setMessage("This application needs camera access to take pictures.")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // 用户同意后，继续请求权限
+                        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .create()
+                    .show();
+        } else {
+            // 如果不需要解释，直接请求权限
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    launchCamera();
+                } else {
+                    Log.e("PostFragment", "Permission denied by user.");
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> takePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Bundle extras = result.getData().getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    if (imageBitmap != null && stepImageView != null) {
+                        stepMapList.add(imageBitmap);
+                        stepImageView.setImageBitmap(imageBitmap);
+                        if (stepTextView != null) stepTextView.setVisibility(View.INVISIBLE);
+                    } else {
+                        Log.e("PostFragment", "Failed to capture image or ImageView is null");
+                    }
+                }
+            }
+    );
+
     private final ActivityResultLauncher<Intent> pickPictureLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
     result -> {
@@ -463,6 +532,10 @@ public class PostFragment extends Fragment {
         setCurrent(view);
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         finishPictureLauncher.launch(intent);
+    }
+    private void launchCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureLauncher.launch(takePictureIntent);
     }
     private void setCurrent(View view) {
         String imageTag = "process_photo_" +String.valueOf(stepCounter-1);
