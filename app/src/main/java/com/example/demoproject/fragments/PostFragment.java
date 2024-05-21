@@ -60,13 +60,17 @@ public class PostFragment extends Fragment {
     private int stepCounter = 2;
     private int latestInstruct = 0;
     private int latestIngred = 0;
+    private int latestRecipe = 0;
+    private Recipe currentRecipe = new Recipe();
     private ImageView finishImageView;
     private TextView finishTextView;
     private ImageView stepImageView;
     private TextView stepTextView;
+    private EditText recipe_title_edittext;
     private ConnectionRequest connectionRequest;
     private List<ImageView> imageViewList = new ArrayList<>();
     private List<TextView> textViewList = new ArrayList<>();
+    private ArrayList<Bitmap> stepMapList = new ArrayList<>();
     private ArrayList<Uploadable>ingredientList  = new ArrayList<>();
     private ArrayList<Uploadable> instructionList = new ArrayList<>();
 
@@ -120,6 +124,8 @@ public class PostFragment extends Fragment {
                     textView.setTextColor(Color.parseColor("#777777"));
                 } else {
                     textView.setTextColor(Color.BLACK);
+                    currentRecipe.setStrCategory(textView.getText().toString());
+                    Log.d("PostFragment", "onItemSelected: "+textView.getText());
                 }
                 textView.setTextSize(15);
                 textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
@@ -139,6 +145,7 @@ public class PostFragment extends Fragment {
 
         ImageView imageView1 = view.findViewWithTag("process_photo_1");
         TextView textView1 = view.findViewWithTag("upload_process_text_1");
+        recipe_title_edittext = view.findViewById(R.id.recipe_title);
         finishImageView = view.findViewById(R.id.finished_photo);
         finishTextView = view.findViewById(R.id.finished_text);
         imageViewList.add(imageView1);
@@ -150,7 +157,7 @@ public class PostFragment extends Fragment {
                     public void onClick(View v) {
 
                         finaladdList(view);
-                        publishRecipe(connectionRequest,ingredientList);
+                        publishRecipe(connectionRequest,ingredientList,instructionList);
                     }
                 }
         );
@@ -267,12 +274,18 @@ public class PostFragment extends Fragment {
     private void addInstructToList(View view,int counter,int latest){
         Instruction instruction = new Instruction();
         String instTag = "step_instruction_"+ String.valueOf(counter);
+        String instTimeTag = "time_"+ String.valueOf(counter);
+        String instUnitTag = "time_unit_"+ String.valueOf(counter);
         String inst = findStringByTag(instTag,view);
+        String instTime = findStringByTag(instTimeTag,view);
+        String instUnit = findStringByTag(instUnitTag,view);
+
         instruction.setIdMeal(latest+1);
         instruction.setNumStep(counter);
         instruction.setIntstruct(inst);
-        //instruction.setStepImg(base64String);
-        //instruction.setStepTime("1");
+        instruction.setStepImg(stepMapList.get(counter-1));
+        instruction.setStepTime(instTime);
+        instruction.setTimeScale(instUnit);
         instructionList.add(instruction);
     }
     private void finaladdList(View view){
@@ -284,6 +297,13 @@ public class PostFragment extends Fragment {
             addInstructToList(view, i,latestInstruct);
         }
         Log.d("finaladd", "finaladdList: "+"instrut added");
+    }
+    private HashMap<String,String> createRecipe(){
+        currentRecipe.setStrName(recipe_title_edittext.getText().toString());
+        currentRecipe.setIdMeal(latestRecipe+1);
+        currentRecipe.setNumInst(stepCounter);
+        currentRecipe.setNumIng(ingredientCounter);
+        return currentRecipe.getHashMap();
     }
     public String findStringByTag(String tag,View view){
         String editTextValue = "";
@@ -309,7 +329,8 @@ public class PostFragment extends Fragment {
                                 JSONObject curObject = response.getJSONObject( i );
                                 latestIngred=curObject.getInt("idMeal_ing");
                                 latestInstruct=curObject.getInt("idMeal_inst");
-                                Log.d("PostFragment", "onSuccess: "+"latestIngred:"+latestIngred+"latestInstruct:"+latestInstruct);
+                                latestRecipe=curObject.getInt("idMeal");
+                                Log.d("PostFragment", "onSuccess: "+"latestIngred:"+latestIngred+" latestInstruct:"+latestInstruct+" latestRecipe:"+latestRecipe);
                             }
                         }
                         catch( JSONException e )
@@ -323,18 +344,31 @@ public class PostFragment extends Fragment {
                     }
                 });
     }
-
+    private void publishMealName(ConnectionRequest connectionRequest, HashMap<String,String> params){
+        String instrutUrl = "https://studev.groept.be/api/a23PT214/upload_mealinfo";
+        connectionRequest.uploadPostRequest(instrutUrl, params,
+                new ConnectionRequest.MyRequestCallback() {
+                    @Override
+                    public void onSuccess(Object response) {
+                        Log.d("PostFragment", "onSuccess: "+response.toString());
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Log.e("PostFragment", "onError: "+error );
+                    }
+                });
+    }
     private void publishInstruction(ConnectionRequest connectionRequest, HashMap<String,String> params){
         String instrutUrl = "https://studev.groept.be/api/a23PT214/upload_instrut";
         connectionRequest.uploadPostRequest(instrutUrl, params,
                 new ConnectionRequest.MyRequestCallback() {
                     @Override
                     public void onSuccess(Object response) {
-                        Log.d("postinstruct", "onSuccess: "+response.toString());
+                        Log.d("PostFragment", "onSuccess: "+response.toString());
                     }
                     @Override
                     public void onError(String error) {
-                        Log.e("postinstruct", "onError: "+error );
+                        Log.e("PostFragment", "onError: "+error );
                     }
                 });
     }
@@ -344,23 +378,24 @@ public class PostFragment extends Fragment {
                 new ConnectionRequest.MyRequestCallback() {
                     @Override
                     public void onSuccess(Object response) {
-                        Log.d("postingred", "onSuccess: "+response.toString());
+                        Log.d("PostFragment", "onSuccess: "+response.toString());
                     }
                     @Override
                     public void onError(String error) {
-                        Log.e("postingred", "onError: "+error );
+                        Log.e("PostFragment", "onError: "+error );
                     }
                 });
     }
-    private void publishRecipe(ConnectionRequest connectionRequest,ArrayList<Uploadable> ingredList){
+    private void publishRecipe(ConnectionRequest connectionRequest,ArrayList<Uploadable> ingredList,ArrayList<Uploadable> instrutList){
         List<HashMap> ingredHashMapList = getHashMap(ingredList);
-        //List<HashMap> instructHashMapList = getHashMap(instrutList);
+        List<HashMap> instructHashMapList = getHashMap(instrutList);
         for (int i = 0; i<ingredList.size();i++){
             publishIngred(connectionRequest,ingredHashMapList.get(i));
         }
-//        for (int i = 0; i<ingredList.size();i++){
-//            publishInstruction(connectionRequest,instructHashMapList.get(i));
-//        }
+        for (int i = 0; i<ingredList.size();i++){
+            publishInstruction(connectionRequest,instructHashMapList.get(i));
+        }
+        publishMealName(connectionRequest,createRecipe());
     }
     private List<HashMap> getHashMap(ArrayList<Uploadable> arrayList) {
         List<HashMap> hashMapList = new ArrayList<>();
@@ -382,6 +417,7 @@ public class PostFragment extends Fragment {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
                 if (bitmap != null) {
                     Log.d("PostFragment", "Bitmap is not null");
+                    stepMapList.add(bitmap);
                     stepImageView.setImageBitmap(bitmap);
                     stepTextView.setVisibility(View.INVISIBLE);
                     Log.d("PostFragment", "Bitmap set to ImageView");
@@ -404,6 +440,7 @@ public class PostFragment extends Fragment {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
                         if (bitmap != null) {
                             Log.d("PostFragment", "Bitmap is not null");
+                            currentRecipe.setBitmap(bitmap);
                             finishImageView.setImageBitmap(bitmap);
                             finishTextView.setVisibility(View.INVISIBLE);
                             Log.d("PostFragment", "Bitmap set to ImageView");

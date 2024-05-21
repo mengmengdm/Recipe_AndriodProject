@@ -1,10 +1,14 @@
 package com.example.demoproject;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +48,7 @@ public class RecipeDetail extends AppCompatActivity {
 
         TextView nameTextView = findViewById(R.id.recipenametextview);
         ImageView mainpicimageview = findViewById(R.id.mainpicimageview);
+        Button start_cooking_Button = findViewById(R.id.start_cooking_Button);
 
         nameTextView.setText(recipe.getName());
         Bitmap bitmap = transBitmap(recipe.getBase64String());
@@ -62,7 +67,20 @@ public class RecipeDetail extends AppCompatActivity {
         detailRecyView.setAdapter(detailAdapter);
         ingredRecyView.setAdapter(ingredAdapter);
 
-
+        start_cooking_Button.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RecipeDetail.this, CookingActivity.class);
+                        try {
+                            intent.putExtra("recipe", recipe);
+                        } catch (Exception e) {
+                            Log.e("RecipeDetail", "Error putting recipe: " + e.getMessage());
+                        }
+                        startActivity(intent);
+                    }
+                }
+        );
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

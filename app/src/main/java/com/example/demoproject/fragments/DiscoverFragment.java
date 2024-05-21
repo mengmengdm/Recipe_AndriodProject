@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,8 +97,10 @@ public class DiscoverFragment extends Fragment {
         //find navController
         NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
         //find view and Widget inside
-        View view = inflater.inflate(R.layout.fragment_today, container, false);
+        View view = inflater.inflate(R.layout.fragment_discover, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+
+
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         //linear and staggergid layout of recyclerview(choose one)
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());

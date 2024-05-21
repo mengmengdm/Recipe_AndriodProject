@@ -12,7 +12,10 @@ import androidx.annotation.NonNull;
 
 import com.example.demoproject.connection.ConnectionRequest;
 
-public class Recipe implements Parcelable {
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+
+public class Recipe implements Parcelable,Uploadable {
 
     private int idMeal;
     private String strName;
@@ -42,6 +45,18 @@ public class Recipe implements Parcelable {
         dest.writeInt(numIng);
         dest.writeInt(numInst);
         dest.writeString(base64String);
+    }
+
+    @Override
+    public HashMap<String, String> getHashMap() {
+        HashMap<String, String> uploadHashMap = new HashMap<>();
+        uploadHashMap.put("idmeal",String.valueOf(getIdMeal()));
+        uploadHashMap.put("strname",String.valueOf(getName()));
+        uploadHashMap.put("strcategory",this.strCategory);
+        uploadHashMap.put("numing",String.valueOf(getNumIng()));
+        uploadHashMap.put("numist",String.valueOf(getNumInst()));
+        uploadHashMap.put("bitimg",getBase64String());
+        return uploadHashMap;
     }
 
     public enum Category{
@@ -108,6 +123,18 @@ public class Recipe implements Parcelable {
         byte[] imageBytes = Base64.decode( base64String, Base64.DEFAULT );
         this.bitmap = BitmapFactory.decodeByteArray( imageBytes, 0, imageBytes.length );
         Log.d("recipe", "setBitmap: "+String.valueOf(bitmap));
+    }
+    public void setBitmap(Bitmap bitmap){
+        this.bitmap = bitmap;
+        fromImgtoBase64();
+    }
+    public String fromImgtoBase64(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        this.bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        this.base64String= Base64.encodeToString(byteArray, Base64.DEFAULT);
+        Log.d("recipe", "fromImgtoBase64: "+this.base64String);
+        return this.base64String;
     }
     public Bitmap getBitmap(){
         return bitmap;

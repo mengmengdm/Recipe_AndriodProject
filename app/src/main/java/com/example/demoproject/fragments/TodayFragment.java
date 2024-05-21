@@ -88,7 +88,7 @@ public class TodayFragment extends Fragment {
         //intintest();
 
         View view = inflater.inflate(R.layout.fragment_today, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview1);
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
