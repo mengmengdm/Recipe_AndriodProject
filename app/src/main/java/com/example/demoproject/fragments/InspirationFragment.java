@@ -86,7 +86,7 @@ public class InspirationFragment extends Fragment {
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
         NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
         TextView apiReturnText = view.findViewById(R.id.apiReturnText);
-        Button testforapi = view.findViewById(R.id.testforapi);
+        Button testforapi = view.findViewById(R.id.turn_button);
         testforapi.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
