@@ -115,7 +115,7 @@
             android:textSize="15sp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="@string/liked_recipes"
+            android:text="@string/favourite_recipes"
             app:layout_constraintEnd_toEndOf="@+id/liked_recipes_nr"
             app:layout_constraintStart_toStartOf="@+id/liked_recipes_nr"
             app:layout_constraintTop_toBottomOf="@+id/liked_recipes_nr"  />
