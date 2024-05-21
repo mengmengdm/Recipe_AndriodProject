@@ -50,6 +50,7 @@ public class RecipeDetail extends AppCompatActivity {
         ImageView mainpicimageview = findViewById(R.id.mainpicimageview);
         Button start_cooking_Button = findViewById(R.id.start_cooking_Button);
 
+
         nameTextView.setText(recipe.getName());
         Bitmap bitmap = transBitmap(recipe.getBase64String());
         mainpicimageview.setImageBitmap(bitmap);
