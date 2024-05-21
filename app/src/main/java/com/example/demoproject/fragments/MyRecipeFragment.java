@@ -1,6 +1,7 @@
 package com.example.demoproject.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,11 @@ import com.example.demoproject.Recipe;
 import com.example.demoproject.RecyclerAdapter;
 import com.example.demoproject.connection.ConnectionRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +44,7 @@ public class MyRecipeFragment extends Fragment {
     private String username;
     private String emailaddress;
     private List<Recipe> recipeLikeList = new ArrayList<>();
-
+    private ArrayList<Integer> likeIdList = new ArrayList<>();
     public MyRecipeFragment() {
         // Required empty public constructor
     }
@@ -74,11 +81,83 @@ public class MyRecipeFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         RecyclerAdapter adapter = new RecyclerAdapter(recipeLikeList, activity);
         if (recipeLikeList.isEmpty()){
-            //initUrl(connectionRequest,adapter,activity);
-        }
+            findLikeRecipe(connectionRequest,String.valueOf(1),adapter);
 
+        }
+        recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         return view;
     }
+    private void findLikeRecipe(ConnectionRequest connectionRequest,String id,RecyclerAdapter adapter){
+        String likeUrl = "https://studev.groept.be/api/a23PT214/get_user_fav/";
+        likeUrl= likeUrl+id;
+        connectionRequest.jsonGetRequest(likeUrl,
+                new ConnectionRequest.MyRequestCallback<JSONArray>() {
+                    @Override
+                    public void onSuccess(JSONArray response) {
+                        try {
+                            for( int i = 0; i < response.length(); i++ ) {
+                                JSONObject curObject = response.getJSONObject( i );
+                                likeIdList.add(curObject.getInt("user_fav"));
+                            }
+                            initLike(connectionRequest,adapter);
+                            Log.d("Database", "onSuccess: "+String.valueOf(likeIdList));
+                        }
+                        catch (JSONException e){
+                            Log.e("Database", "fail: "+e );
+                        }
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Log.e("Database", "fail: "+error );
+                    }
+                });
+    }
+    private void initLike(ConnectionRequest connectionRequest, RecyclerAdapter adapter){
+        for(int i = 0; i< likeIdList.size();i++)
+        {
+            String imgUrl = "https://studev.groept.be/api/a23PT214/get_meal_info_byid/"+likeIdList.get(i);
 
+            Log.d("Database", "initLike: "+likeIdList.size() );
+            connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
+                @Override
+                public void onSuccess(JSONArray response) {
+                    try {
+                        //String responseString = "";
+                        for( int i = 0; i < response.length(); i++ )
+                        {
+                            Recipe recipe = new Recipe();
+                            JSONObject curObject = response.getJSONObject( i );
+                            recipe.setIdMeal(curObject.getInt("idMeal"));
+                            recipe.setStrName(curObject.getString("strName"));
+                            recipe.setStrCategory(curObject.getString("strCategory"));
+                            recipe.setNumIng(curObject.getInt("numIng"));
+                            recipe.setNumInst(curObject.getInt("numInst"));
+                            recipe.setBitmap(curObject.getString("bitImg"));
+                            //Log.d("recipe", "onSuccess:"+curObject.getString("stepImg"));
+                            recipeLikeList.add(recipe);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                    catch( JSONException e )
+                    {
+                        Log.e( "Database", e.getMessage(), e );
+                    }
+                }
+                @Override
+                public void onError(String error) {
+                    Log.e("initurl", "onError: "+error );
+                }
+            });
+        }
+        adapter.notifyDataSetChanged();
+
+    }
 
 }

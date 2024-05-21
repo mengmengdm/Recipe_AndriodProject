@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -141,10 +142,17 @@ public class ConnectionRequest {
             public Map<String, String> getHeaders(){
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer sk-proj-9BGeCKgoArLuQVE9TC7FT3BlbkFJDqTCbgQAwDwOBXqCj9MI");  // 替换为你的实际API密钥
+                headers.put("Authorization", "Bearer sk-proj-XR2sUe49LO5DOeBOGlSIT3BlbkFJamxfamGBNECIqBkk9BFA");  // 替换为你的实际API密钥
                 return headers;
             }
         };
+        apiRequest.setRetryPolicy(
+                new DefaultRetryPolicy(
+                        20000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+        );
         requestQueue.add(apiRequest);
     }
     public interface MyRequestCallback<T> {

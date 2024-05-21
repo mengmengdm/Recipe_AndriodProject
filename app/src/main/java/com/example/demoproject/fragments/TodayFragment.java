@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.demoproject.R;
 import com.example.demoproject.Recipe;
@@ -48,6 +49,7 @@ public class TodayFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String content;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -83,22 +85,54 @@ public class TodayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_today, container, false);
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
         NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
-        connectionRequest.apiPostRequest("send hello",
+        TextView apiReturnText = view.findViewById(R.id.apiReturnText);
+        connectionRequest.apiPostRequest("tomato, potato" + "give me a recipe with ingredient and instruction",
                 new ConnectionRequest.MyRequestCallback<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject response) {
-                        Log.d("api", "onSuccess: "+response.toString());
+                        try {
+                            content = response.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                            Log.d("api", "onSuccess: " + content);
+                            apiReturnText.setText(content);
+                            getJsonData(connectionRequest);
+                        } catch (JSONException e) {
+                            Log.e("api", "fail: " + e);
+                        }
                     }
 
                     @Override
                     public void onError(String error) {
-                        Log.d("api", "error: "+error);
+                        Log.d("api", "error: " + error);
                     }
                 });
-        View view = inflater.inflate(R.layout.fragment_today, container, false);
+
         return view;
     }
+    public void getJsonData(ConnectionRequest connectionRequest){
+        String apiRequest = "i want to return it with all ingredients and instructions in json,it contains recipetitle, all ingredients, instructions, and ingredients are json array, containg ingredientname and quantity. the instructions are jsonarray too, each step contain instruction, time and timescale";
+        connectionRequest.apiPostRequest(content+apiRequest,
+                new ConnectionRequest.MyRequestCallback<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            String content = response.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                            Log.d("api", "onSuccess: " + content);
+//                            apiReturnText.setText(content);
+                        } catch (JSONException e) {
+                            Log.e("api", "fail: " + e);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.d("api", "error: " + error);
+                    }
+                });
+
+    }
+
 }
