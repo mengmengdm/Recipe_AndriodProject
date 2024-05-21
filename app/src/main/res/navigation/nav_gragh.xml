@@ -29,7 +29,7 @@
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/todayFragment"
-        android:name="com.example.demoproject.fragments.TodayFragment"
+        android:name="com.example.demoproject.fragments.InspirationFragment"
         android:label="Today"
         tools:layout="@layout/fragment_today" />
     <fragment

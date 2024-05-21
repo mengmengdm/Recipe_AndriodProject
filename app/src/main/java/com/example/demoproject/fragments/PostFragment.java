@@ -55,7 +55,7 @@ public class PostFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String ARG_PARAM3 = "jsonString";
     private String mParam1;
     private String mParam2;
 
@@ -65,6 +65,7 @@ public class PostFragment extends Fragment {
     private int latestInstruct = 0;
     private int latestIngred = 0;
     private int latestRecipe = 0;
+    private String jsonString = "";
     private Recipe currentRecipe = new Recipe();
     private ImageView finishImageView;
     private TextView finishTextView;
@@ -83,11 +84,12 @@ public class PostFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static PostFragment newInstance(String param1, String param2) {
+    public static PostFragment newInstance(String param1, String param2,String jsonString) {
         PostFragment fragment = new PostFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM3, jsonString);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,6 +100,8 @@ public class PostFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            jsonString = getArguments().getString("jsonString");
+            Log.d("PostFragment", "onCreate: "+jsonString);
         }
     }
 

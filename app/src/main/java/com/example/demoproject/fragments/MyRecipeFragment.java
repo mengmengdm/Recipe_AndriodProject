@@ -85,7 +85,7 @@ public class MyRecipeFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         RecyclerAdapter adapter = new RecyclerAdapter(recipeLikeList, activity, userid);
         if (recipeLikeList.isEmpty()){
-            findLikeRecipe(connectionRequest,String.valueOf(1),adapter);
+            findLikeRecipe(connectionRequest,String.valueOf(userid),adapter);
 
         }
         recyclerView.setAdapter(adapter);
@@ -110,7 +110,9 @@ public class MyRecipeFragment extends Fragment {
                                 JSONObject curObject = response.getJSONObject( i );
                                 likeIdList.add(curObject.getInt("user_fav"));
                             }
-                            initLike(connectionRequest,adapter);
+                            if(!likeIdList.isEmpty()){
+                                initLike(connectionRequest,adapter);
+                            }
                             Log.d("Database", "onSuccess: "+String.valueOf(likeIdList));
                         }
                         catch (JSONException e){

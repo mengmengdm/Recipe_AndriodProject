@@ -26,7 +26,7 @@ import com.example.demoproject.fragments.DiscoverFragment;
 import com.example.demoproject.fragments.MyRecipeFragment;
 import com.example.demoproject.fragments.PostFragment;
 import com.example.demoproject.fragments.ProfileFragment;
-import com.example.demoproject.fragments.TodayFragment;
+import com.example.demoproject.fragments.InspirationFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private MyRecipeFragment myRecipeFragment;
     private PostFragment postFragment;
     private ProfileFragment profileFragment;
-    private TodayFragment todayFragment;
+    private InspirationFragment inspirationFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
