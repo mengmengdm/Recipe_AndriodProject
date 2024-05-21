@@ -41,6 +41,7 @@ import com.example.demoproject.R;
 import com.example.demoproject.Recipe;
 import com.example.demoproject.Uploadable;
 import com.example.demoproject.connection.ConnectionRequest;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -86,6 +87,7 @@ public class PostFragment extends Fragment {
     private ArrayList<Bitmap> stepMapList = new ArrayList<>();
     private ArrayList<Uploadable>ingredientList  = new ArrayList<>();
     private ArrayList<Uploadable> instructionList = new ArrayList<>();
+    private View rootView;
 
 
     public PostFragment() {
@@ -116,7 +118,7 @@ public class PostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate The Layout For This Fragment
-        View rootView = inflater.inflate(R.layout.fragment_post, container, false);
+        rootView = inflater.inflate(R.layout.fragment_post, container, false);
         //refresh latestdata
         Activity activity = requireActivity();
         connectionRequest = new ConnectionRequest(activity);
@@ -215,6 +217,7 @@ public class PostFragment extends Fragment {
 
         }
     }
+
 
     private View addViewToLayout(LinearLayoutCompat layout, int layoutResId) {
         LayoutInflater inflater = LayoutInflater.from(layout.getContext());
@@ -383,6 +386,7 @@ public class PostFragment extends Fragment {
                     @Override
                     public void onSuccess(Object response) {
                         Log.d("PostFragment", "onSuccess: "+response.toString());
+                        snackBar("Publish Successful");
                     }
                     @Override
                     public void onError(String error) {
@@ -390,6 +394,13 @@ public class PostFragment extends Fragment {
                     }
                 });
     }
+
+    private void snackBar(String message) {
+        if (rootView != null) {
+            Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
     private void publishInstruction(ConnectionRequest connectionRequest, HashMap<String,String> params){
         String instrutUrl = "https://studev.groept.be/api/a23PT214/upload_instrut";
         connectionRequest.uploadPostRequest(instrutUrl, params,
