@@ -20,14 +20,21 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.demoproject.connection.ConnectionRequest;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecipeDetail extends AppCompatActivity {
 
@@ -36,6 +43,8 @@ public class RecipeDetail extends AppCompatActivity {
     private List<Instruction> instructionList = new ArrayList<>();
     private List<Ingredient> ingredientList = new ArrayList<>();
     private ConnectionRequest connectionRequest;
+    private String userid;
+    private static final String POST_URL = "https://studev.groept.be/api/a23pt214/upload_user_like/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +55,12 @@ public class RecipeDetail extends AppCompatActivity {
         // get the recipe class pass from the previous fragment
         recipe = getIntent().getParcelableExtra("recipe");
 
+        userid = getIntent().getStringExtra("user_id");
+
         TextView nameTextView = findViewById(R.id.recipenametextview);
         ImageView mainpicimageview = findViewById(R.id.mainpicimageview);
         Button start_cooking_Button = findViewById(R.id.start_cooking_Button);
+        Button add_to_favourites_Button = findViewById(R.id.add_to_favourites_button);
 
 
         nameTextView.setText(recipe.getName());
@@ -83,11 +95,56 @@ public class RecipeDetail extends AppCompatActivity {
                 }
         );
 
+        add_to_favourites_Button.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addToFavourites();
+                    }
+                }
+        );
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void snackBar(String message) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        snackbar.show();
+    }
+
+    private void addToFavourites() {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest submitRequest = new StringRequest(
+                Request.Method.POST,
+                POST_URL,
+                response -> {
+                    runOnUiThread(() -> {
+                        snackBar("Add To Favourites Successful");
+                    });
+                },
+                error -> {
+                    runOnUiThread(() -> snackBar("Add To Favourites Unsuccessful: " + error.toString()));
+                }
+        ) {
+            //Pass POST Parameters To Webservice
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", userid); // 使用传递过来的用户ID
+                params.put("idfav", String.valueOf(recipe.getIdMeal())); // 使用传递过来的食谱ID
+                return params;
+            }
+        };
+
+        requestQueue.add(submitRequest);
     }
 
     private void getInstruction(Recipe recipe, int id, RecipeDetailRecyclerAdapter adapter){
