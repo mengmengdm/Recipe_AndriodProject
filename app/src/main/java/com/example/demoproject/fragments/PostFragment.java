@@ -41,10 +41,16 @@ import com.example.demoproject.R;
 import com.example.demoproject.Recipe;
 import com.example.demoproject.Uploadable;
 import com.example.demoproject.connection.ConnectionRequest;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +78,8 @@ public class PostFragment extends Fragment {
     private ImageView stepImageView;
     private TextView stepTextView;
     private EditText recipe_title_edittext;
+    private Button addIngredientButton;
+    private Button addStepButton;
     private ConnectionRequest connectionRequest;
     private List<ImageView> imageViewList = new ArrayList<>();
     private List<TextView> textViewList = new ArrayList<>();
@@ -159,6 +167,7 @@ public class PostFragment extends Fragment {
         imageViewList.add(imageView1);
         textViewList.add(textView1);
         Button publish_recipe_button = view.findViewById(R.id.publish_recipe_button);
+
         publish_recipe_button.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -183,7 +192,7 @@ public class PostFragment extends Fragment {
             }
         });
         //Dynamically Add Ingredients
-        Button addIngredientButton = view.findViewById(R.id.add_ingredient_button);
+        addIngredientButton = view.findViewById(R.id.add_ingredient_button);
         LinearLayoutCompat ingredientsLayout = view.findViewById(R.id.ingredients_layout);
         addIngredientButton.setOnClickListener(v -> {
             //addIngredToList(view);
@@ -192,13 +201,19 @@ public class PostFragment extends Fragment {
         });
 
         //Dynamically Add Instructions
-        Button addStepButton = view.findViewById(R.id.add_step_button);
+        addStepButton = view.findViewById(R.id.add_step_button);
         LinearLayoutCompat instructionsLayout = view.findViewById(R.id.instructions_layout);
         addStepButton.setOnClickListener(v -> {
             //addInstructToList(view);
             View stepView = addViewToLayout(instructionsLayout, R.layout.step_layout);
             updateStepView(stepView, stepCounter++,view);
         });
+        if(jsonString != null && !jsonString.isEmpty()){
+            praseJson(view);
+        }
+        else{
+
+        }
     }
 
     private View addViewToLayout(LinearLayoutCompat layout, int layoutResId) {
@@ -318,11 +333,20 @@ public class PostFragment extends Fragment {
         EditText editText = view.findViewWithTag(tag);
         if (editText != null){
             editTextValue = editText.getText().toString();
-            Log.d("getEditText", "findStringByTag: "+tag+": "+editTextValue);
+            Log.d("PostFragment", "findStringByTag: "+tag+": "+editTextValue);
         } else{
-            Log.e("getEditText", "fail to findStringByTag: "+ tag);
+            Log.e("PostFragment", "fail to findStringByTag: "+ tag);
         }
         return editTextValue;
+    }
+    public void setStringByTag(String tag,View view,String content){
+        EditText editText = view.findViewWithTag(tag);
+        if (editText != null){
+            editText.setText(content);
+            Log.d("PostFragment", "findStringByTag: "+tag+": "+content);
+        } else{
+            Log.e("PostFragment", "fail to findStringByTag: "+ tag);
+        }
     }
     private void getLatestData(ConnectionRequest connectionRequest){
         String ingredurl ="https://studev.groept.be/api/a23PT214/get_latest_instruct&ingred";
@@ -555,7 +579,32 @@ public class PostFragment extends Fragment {
             Log.e("PostFragment", "stepTextView is null");
         }
     }
+    private void praseJson(View view){
+        Gson gson = new Gson();
+        JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
 
+        JsonArray ingredientsArray = jsonObject.getAsJsonArray("ingredients");
+        JsonArray instructionsArray = jsonObject.getAsJsonArray("instructions");
+
+        for (int i = 0; i < ingredientsArray.size(); i++) {
+            JsonObject ingredient = ingredientsArray.get(i).getAsJsonObject();
+            String nameTag = "ingredient_name_" + String.valueOf(i+1);
+            String amountTag = "ingredient_amount_" + String.valueOf(i+1);
+            setStringByTag(nameTag,view,ingredient.get("ingredientName").getAsString());
+            setStringByTag(amountTag,view,ingredient.get("quantity").getAsString());
+            addIngredientButton.performClick();
+        }
+        for (int i = 0; i < instructionsArray.size(); i++) {
+            JsonObject instruction = instructionsArray.get(i).getAsJsonObject();
+            String instTag = "step_instruction_"+ String.valueOf(i+1);
+            String instTimeTag = "time_"+ String.valueOf(i+1);
+            String instUnitTag = "time_unit_"+ String.valueOf(i+1);
+            setStringByTag(instTag,view,instruction.get("step").getAsString());
+            setStringByTag(instTimeTag,view,instruction.get("time").getAsString());
+            setStringByTag(instUnitTag,view,instruction.get("timeScale").getAsString());
+            addStepButton.performClick();
+        }
+    }
 
 
 

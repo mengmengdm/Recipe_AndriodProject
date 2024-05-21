@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.demoproject.R;
@@ -37,8 +38,6 @@ public class InspirationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String OPENAI_API = "https://api.openai.com/v1/chat/completions";
-    private String API_KEY = "sk-proj-9BGeCKgoArLuQVE9TC7FT3BlbkFJDqTCbgQAwDwOBXqCj9MI";
-
     private List<Recipe> recipeList = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
@@ -46,7 +45,10 @@ public class InspirationFragment extends Fragment {
     private String mParam2;
     private String content;
     private String jsonString;
-
+    private Button create_button;
+    private Button turn_button;
+    private EditText ingredient_edittext;
+    private TextView apiReturnText;
     public InspirationFragment() {
         // Required empty public constructor
     }
@@ -85,9 +87,19 @@ public class InspirationFragment extends Fragment {
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
         NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
-        TextView apiReturnText = view.findViewById(R.id.apiReturnText);
-        Button testforapi = view.findViewById(R.id.turn_button);
-        testforapi.setOnClickListener(
+        apiReturnText = view.findViewById(R.id.apiReturnText);
+        turn_button = view.findViewById(R.id.turn_button);
+        create_button = view.findViewById(R.id.create_button);
+        ingredient_edittext = view.findViewById(R.id.ingredient_edittext);
+        create_button.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getOpenAIRespond(connectionRequest,ingredient_edittext.getText().toString());
+                    }
+                }
+        );
+        turn_button.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -95,11 +107,17 @@ public class InspirationFragment extends Fragment {
                         bundle.putString("jsonString", jsonString);
 //                        bundle.putString("param2", "YourValue2");
                         // navigate to post
+                        Log.d("PostFragment", "onClick: "+jsonString);
                         navController.navigate(R.id.postFragment, bundle);
                     }
                 }
         );
-        connectionRequest.apiPostRequest("tomato, potato" + "give me a recipe with ingredient and instruction",
+
+
+        return view;
+    }
+    public void getOpenAIRespond(ConnectionRequest connectionRequest,String ingredient){
+        connectionRequest.apiPostRequest(ingredient + "give me a recipe with ingredient and instruction",
                 new ConnectionRequest.MyRequestCallback<JSONObject>() {
                     @Override
                     public void onSuccess(JSONObject response) {
@@ -118,8 +136,6 @@ public class InspirationFragment extends Fragment {
                         Log.d("api", "error: " + error);
                     }
                 });
-
-        return view;
     }
     public void getJsonData(ConnectionRequest connectionRequest){
         String apiRequest = "i want to return it with all ingredients and instructions in json,it contains recipetitle, all ingredients, instructions, and ingredients are json array, containg ingredientname and quantity. the instructions are jsonarray too, each step contain instruction, time and timescale";
@@ -128,14 +144,13 @@ public class InspirationFragment extends Fragment {
                     @Override
                     public void onSuccess(JSONObject response) {
                         try {
-                            String jsonString = response.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                            jsonString = response.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
                             Log.d("api", "onSuccess: " + jsonString);
 //                            apiReturnText.setText(content);
                         } catch (JSONException e) {
                             Log.e("api", "fail: " + e);
                         }
                     }
-
                     @Override
                     public void onError(String error) {
                         Log.d("api", "error: " + error);
