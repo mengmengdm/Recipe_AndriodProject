@@ -39,10 +39,12 @@ public class MyRecipeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER_NAME = "username";
     private static final String ARG_EMAIL_ADDRESS = "emailaddress";
+    private static final String ARG_USER_ID = "userid";
 
     // TODO: Rename and change types of parameters
     private String username;
     private String emailaddress;
+    private String userid;
     private List<Recipe> recipeLikeList = new ArrayList<>();
     private ArrayList<Integer> likeIdList = new ArrayList<>();
     public MyRecipeFragment() {
@@ -50,11 +52,12 @@ public class MyRecipeFragment extends Fragment {
     }
 
     // TODO: Rename and change types and number of parameters
-    public static MyRecipeFragment newInstance(String username, String emailaddress) {
+    public static MyRecipeFragment newInstance(String username, String emailaddress, String userid) {
         MyRecipeFragment fragment = new MyRecipeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USER_NAME, username);
         args.putString(ARG_EMAIL_ADDRESS, emailaddress);
+        args.putString(ARG_USER_ID, userid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +68,7 @@ public class MyRecipeFragment extends Fragment {
         if (getArguments() != null) {
             username = getArguments().getString(ARG_USER_NAME);
             emailaddress = getArguments().getString(ARG_EMAIL_ADDRESS);
+            userid = getArguments().getString(ARG_USER_ID);
         }
     }
 
@@ -79,7 +83,7 @@ public class MyRecipeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        RecyclerAdapter adapter = new RecyclerAdapter(recipeLikeList, activity);
+        RecyclerAdapter adapter = new RecyclerAdapter(recipeLikeList, activity, userid);
         if (recipeLikeList.isEmpty()){
             findLikeRecipe(connectionRequest,String.valueOf(1),adapter);
 

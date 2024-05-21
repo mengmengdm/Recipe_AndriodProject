@@ -140,6 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                             String Username = curObject.getString("UserName");
                             String Emailaddress = curObject.getString("EmailAddress");
                             String hashedPassword = curObject.getString("Password");
+                            String Userid = curObject.getString("Id");
 
                             //User Exists
                             if(userName.getText().toString().equals(Username)){
@@ -154,6 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                                         //Pass Data To MainActivity
                                         intent.putExtra("username", Username);
                                         intent.putExtra("emailaddress", Emailaddress);
+                                        intent.putExtra("userid", Userid);
                                         startActivity(intent);
                                         finish();
                                     }, 2000);

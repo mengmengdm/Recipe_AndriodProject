@@ -181,12 +181,9 @@ public class SignupActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     runOnUiThread(() -> {
                         snackBar("Sign Up Successful");
-                        //Enter App In Two Seconds
+                        //Enter Login Page In Two Seconds
                         findViewById(android.R.id.content).postDelayed(() -> {
-                            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                            //Pass Data To MainActivity
-                            intent.putExtra("username", userName.getText().toString());
-                            intent.putExtra("emailaddress", emailAddress.getText().toString());
+                            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                         }, 2000);

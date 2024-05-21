@@ -1,6 +1,7 @@
 package com.example.demoproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ private List<Recipe> recipeList;
 private ConnectionRequest connectionRequest;
 private OnItemClickListener listener;
 private int itemPosition;
+private String userId;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -29,9 +31,10 @@ private int itemPosition;
         this.listener = listener;
     }
 
-    public RecyclerAdapter(List<Recipe> recipeList, Context context){
+    public RecyclerAdapter(List<Recipe> recipeList, Context context, String userId){
     this.recipeList = recipeList;
     connectionRequest = new ConnectionRequest(context);
+    this.userId = userId;
     }
 
 static class ViewHolder extends RecyclerView.ViewHolder{
@@ -61,13 +64,24 @@ static class ViewHolder extends RecyclerView.ViewHolder{
         holder.text1.setText(String.valueOf(recipe.getIdMeal()));
         holder.text2.setText(recipe.getName());
         holder.img1.setImageBitmap(recipe.getBitmap());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onItemClick(holder.getAdapterPosition());
-                }
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (listener != null) {
+//                    listener.onItemClick(holder.getAdapterPosition());
+//                }
+//            }
+//        });
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(holder.getAdapterPosition());
             }
+            // 启动 RecipeDetail 并传递用户ID和选中的食谱对象
+            Context context = v.getContext();
+            Intent intent = new Intent(context, RecipeDetail.class);
+            intent.putExtra("recipe", recipeList.get(position)); // 传递选中的食谱对象
+            intent.putExtra("user_id", userId); // 传递用户ID
+            context.startActivity(intent);
         });
         //holder.img1.setImageBitmap();
     }
