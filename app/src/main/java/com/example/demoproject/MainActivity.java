@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.discoverFragment) {
                 navController.navigate(R.id.discoverFragment);
             } else if (itemId == R.id.myRecipeFragment) {
-                navController.navigate(R.id.myRecipeFragment);
+                navController.navigate(R.id.myRecipeFragment,bundle);
             } else if (itemId == R.id.postFragment) {
-                navController.navigate(R.id.postFragment);
+                navController.navigate(R.id.postFragment,bundle);
             } else if (itemId == R.id.profileFragment) {
                 navController.navigate(R.id.profileFragment, bundle);
             } else if (itemId == R.id.todayFragment) {

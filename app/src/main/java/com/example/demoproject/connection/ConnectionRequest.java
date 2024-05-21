@@ -4,6 +4,7 @@ import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,10 +12,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -102,6 +105,47 @@ public class ConnectionRequest {
             }
         };
         requestQueue.add(postRequest);
+    }
+    public void apiPostRequest(String sendmessage, final MyRequestCallback callback){
+        String url = "https://api.openai.com/v1/chat/completions";
+        JSONObject requestData = new JSONObject();
+        try {
+            JSONObject message = new JSONObject();
+            message.put("role", "user");
+            message.put("content", sendmessage);
+
+            JSONArray messagesArray = new JSONArray();
+            messagesArray.put(message);
+
+            requestData.put("model", "gpt-3.5-turbo");
+            requestData.put("messages", messagesArray);
+            requestData.put("temperature", 0.7);
+        }
+        catch (Exception e){
+            Log.e("api", "apiPostRequest: "+e );
+        }
+        JsonObjectRequest apiRequest = new JsonObjectRequest(Request.Method.POST, url,requestData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.toString());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders(){
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer sk-proj-9BGeCKgoArLuQVE9TC7FT3BlbkFJDqTCbgQAwDwOBXqCj9MI");  // 替换为你的实际API密钥
+                return headers;
+            }
+        };
+        requestQueue.add(apiRequest);
     }
     public interface MyRequestCallback<T> {
         void onSuccess(T response);

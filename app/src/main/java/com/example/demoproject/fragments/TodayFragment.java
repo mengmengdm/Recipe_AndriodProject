@@ -40,6 +40,8 @@ public class TodayFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String OPENAI_API = "https://api.openai.com/v1/chat/completions";
+    private String API_KEY = "sk-proj-9BGeCKgoArLuQVE9TC7FT3BlbkFJDqTCbgQAwDwOBXqCj9MI";
 
     private List<Recipe> recipeList = new ArrayList<>();
 
@@ -84,64 +86,19 @@ public class TodayFragment extends Fragment {
         Activity activity = requireActivity();
         ConnectionRequest connectionRequest = new ConnectionRequest(activity);
         NavController navController = Navigation.findNavController(requireActivity(), R.id.fragment_container);
+        connectionRequest.apiPostRequest("send hello",
+                new ConnectionRequest.MyRequestCallback<JSONObject>() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        Log.d("api", "onSuccess: "+response.toString());
+                    }
 
-        //intintest();
-
+                    @Override
+                    public void onError(String error) {
+                        Log.d("api", "error: "+error);
+                    }
+                });
         View view = inflater.inflate(R.layout.fragment_today, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview1);
-        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
-
-        });
-        //transfer the data into the adapter
-        RecyclerAdapter adapter = new RecyclerAdapter(recipeList, activity);
-        adapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Log.d("test", "onItemClick: "+position);
-                navController.navigate(R.id.recipeFragment);
-            }
-        });
-        //set recyclerView
-        recyclerView.setAdapter(adapter);
-        //initUrl(connectionRequest,adapter,activity);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                adapter.notifyDataSetChanged();
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
         return view;
-    }
-
-    //test method of recyclerview
-
-//    private void intintest() {
-//        for (int i = 0; i < 100; i++) {
-//            String str = String.valueOf(i);
-//            Recipe item = new Recipe(i);
-//            recipeList.add(item);
-//    }
-//}
-    //importing real urls to the list
-    private void initUrl(ConnectionRequest connectionRequest, RecyclerAdapter adapter, Context context){
-        String imgUrl = "https://studev.groept.be/api/a23PT214/get_img";
-        connectionRequest.jsonGetRequest(imgUrl, new ConnectionRequest.MyRequestCallback<JSONArray>() {
-            @Override
-            public void onSuccess(JSONArray response) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-                Log.e("initurl", "onError: "+error );
-            }
-        });
     }
 }
