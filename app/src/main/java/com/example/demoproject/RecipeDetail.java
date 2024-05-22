@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,6 +44,7 @@ public class RecipeDetail extends AppCompatActivity {
     private List<Instruction> instructionList = new ArrayList<>();
     private List<Ingredient> ingredientList = new ArrayList<>();
     private ConnectionRequest connectionRequest;
+    private NestedScrollView detailScrollView;
     private String userid;
     private static final String POST_URL = "https://studev.groept.be/api/a23pt214/upload_user_like/";
 
@@ -61,7 +63,7 @@ public class RecipeDetail extends AppCompatActivity {
         ImageView mainpicimageview = findViewById(R.id.mainpicimageview);
         Button start_cooking_Button = findViewById(R.id.start_cooking_Button);
         Button add_to_favourites_Button = findViewById(R.id.add_to_favourites_button);
-
+        detailScrollView = findViewById(R.id.detailScrollView);
 
         nameTextView.setText(recipe.getName());
         Bitmap bitmap = transBitmap(recipe.getBase64String());
@@ -84,13 +86,7 @@ public class RecipeDetail extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(RecipeDetail.this, CookingActivity.class);
-                        try {
-                            intent.putExtra("recipe", recipe);
-                        } catch (Exception e) {
-                            Log.e("RecipeDetail", "Error putting recipe: " + e.getMessage());
-                        }
-                        startActivity(intent);
+                        detailScrollView.smoothScrollTo(0, 0);
                     }
                 }
         );
