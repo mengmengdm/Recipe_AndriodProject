@@ -138,7 +138,7 @@ public class InspirationFragment extends Fragment {
                 });
     }
     public void getJsonData(ConnectionRequest connectionRequest){
-        String apiRequest = "i want to return it with all ingredients and instructions in json,it contains recipetitle, all ingredients, instructions, and ingredients are json array, containg ingredientname and quantity. the instructions are jsonarray too, each step contain instruction, time and timescale";
+        String apiRequest = "i want to return it with all ingredients and instructions in json,it contains recipetitle, all ingredients, instructions, and ingredients are json array, containg ingredientname and quantity. the instructions are jsonarray too, each instruction contains instruction, time and timescale";
         connectionRequest.apiPostRequest(content+apiRequest,
                 new ConnectionRequest.MyRequestCallback<JSONObject>() {
                     @Override

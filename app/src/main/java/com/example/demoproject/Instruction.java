@@ -17,7 +17,7 @@ public class Instruction implements Uploadable, Parcelable {
     private int numStep= 0;
     private String intstruct = "";
     private String stepTime= "";
-    private String timeScale= "";
+    private String timeScale;
     private Bitmap stepImg ;
     private String base64String= "";
     private HashMap<String, String> uploadHashMap;
@@ -47,7 +47,7 @@ public class Instruction implements Uploadable, Parcelable {
     }
 
     public void setStepTime(String stepTime) {
-        if (stepTime.equals("null") ){
+        if (stepTime == null || stepTime.equals("null") || stepTime.isEmpty() ){
             this.stepTime = "";
         }
         else{

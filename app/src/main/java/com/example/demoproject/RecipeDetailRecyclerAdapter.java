@@ -64,7 +64,9 @@ static class ViewHolder extends RecyclerView.ViewHolder{
         holder.stepnumbertextview.setText("STEP"+instruction.getNumStep()+":");
         holder.steppicimageview.setImageBitmap(instruction.getStepImg());
         holder.stepdetailtextview.setText(instruction.getIntstruct());
-        holder.timetextview.setText(instruction.getStepTime());
+        if (!instruction.getTimeScale().equals("null")){
+            holder.timetextview.setText(instruction.getStepTime()+instruction.getTimeScale());
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

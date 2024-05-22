@@ -142,7 +142,7 @@ public class ConnectionRequest {
             public Map<String, String> getHeaders(){
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer sk-proj-XR2sUe49LO5DOeBOGlSIT3BlbkFJamxfamGBNECIqBkk9BFA");  // 替换为你的实际API密钥
+                headers.put("Authorization", "Bearer sk-proj-XR2sUe49LO5DOeBOGlSIT3BlbkFJamxfamGBNECIqBkk9BFA");
                 return headers;
             }
         };

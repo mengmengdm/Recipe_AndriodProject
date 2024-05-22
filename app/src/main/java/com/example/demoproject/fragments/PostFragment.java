@@ -601,19 +601,31 @@ public class PostFragment extends Fragment {
             JsonObject ingredient = ingredientsArray.get(i).getAsJsonObject();
             String nameTag = "ingredient_name_" + String.valueOf(i+1);
             String amountTag = "ingredient_amount_" + String.valueOf(i+1);
-            setStringByTag(nameTag,view,ingredient.get("ingredientName").getAsString());
-            setStringByTag(amountTag,view,ingredient.get("quantity").getAsString());
-            addIngredientButton.performClick();
+
+            try {
+                setStringByTag(nameTag,view,ingredient.get("ingredientName").getAsString());
+                setStringByTag(amountTag,view,ingredient.get("quantity").getAsString());
+                addIngredientButton.performClick();
+            }
+            catch (Exception e){
+                Log.e("api", "praseJson: "+e );
+            }
+
         }
         for (int i = 0; i < instructionsArray.size(); i++) {
             JsonObject instruction = instructionsArray.get(i).getAsJsonObject();
             String instTag = "step_instruction_"+ String.valueOf(i+1);
             String instTimeTag = "time_"+ String.valueOf(i+1);
             String instUnitTag = "time_unit_"+ String.valueOf(i+1);
-            setStringByTag(instTag,view,instruction.get("step").getAsString());
-            setStringByTag(instTimeTag,view,instruction.get("time").getAsString());
-            setStringByTag(instUnitTag,view,instruction.get("timeScale").getAsString());
-            addStepButton.performClick();
+            try {
+                setStringByTag(instTag,view,instruction.get("instruction").getAsString());
+                setStringByTag(instTimeTag,view,instruction.get("time").getAsString());
+                setStringByTag(instUnitTag,view,instruction.get("timeScale").getAsString());
+                addStepButton.performClick();
+            }
+            catch (Exception e){
+                Log.e("api", "praseJson: "+e );
+            }
         }
     }
 
